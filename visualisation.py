@@ -195,7 +195,7 @@ def save_csv():
 
 if __name__ == '__main__':
 
-    pathtofile='./files_to_vizualize/'
+    pathtofile='./files_to_visualize/'
     listimage=os.listdir(pathtofile)
     counter=0
     COUNTER_MAX=len(listimage)
