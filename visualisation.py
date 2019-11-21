@@ -5,10 +5,11 @@ import os
 import glob
 import astropy.io.fits as pyfits
 from astropy.wcs import WCS
-from Tkinter import *
 if sys.version_info[0] < 3:
+    from Tkinter import *
     from tkMessageBox import *
 else:
+    from tkinter import *
     from tkinter.messagebox import *
 import PIL
 from PIL import Image, ImageTk, ImageDraw
