@@ -158,7 +158,7 @@ def update_lens():
     else:
         print('No more images to analyse')
         np.savetxt('./classifications/classification_from' +listnames[0] +'to'+listnames[-1]+".csv",
-                   np.transpose(np.array([listnames,classification], dtype='S25')), delimiter=",", fmt='%s')
+                   np.transpose(np.array([listnames,classification], dtype='U25')), delimiter=",", fmt='%s')
     return
 def update_non_lens():
     global photo
@@ -206,7 +206,7 @@ def numpyarray_from_fits(fits_path,ind_image=0,color=False):
 def save_csv():
     try:
         np.savetxt('./classifications/classification_from' + listnames[0] + 'to' + listnames[-1] + ".csv",
-                   np.transpose(np.array([listnames, classification], dtype='S25')), delimiter=",", fmt='%s')
+                   np.transpose(np.array([listnames, classification], dtype='U25')), delimiter=",", fmt='%s')
 
     except IndexError:
         showinfo("Error", "The list is empty")
