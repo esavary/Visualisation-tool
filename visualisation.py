@@ -5,6 +5,7 @@ import os
 import glob
 import astropy.io.fits as pyfits
 from astropy.wcs import WCS
+
 if sys.version_info[0] < 3:
     from Tkinter import *
     from tkMessageBox import *
@@ -14,8 +15,17 @@ else:
 import PIL
 from PIL import Image, ImageTk, ImageDraw
 import matplotlib.pyplot as plt
+from astropy.visualization import lupton_rgb
 
-
+def showplot_rgb(rimage,gimage,bimage):
+    mr=max(rimage.flatten())
+    mg=max(gimage.flatten())
+    mb=max(bimage.flatten())
+    minval = min(min((rimage/mr).flatten()),min((gimage/mg).flatten()),min((bimage/mb).flatten()))
+    maxval = max(max((rimage/mr).flatten()),max((gimage/mg).flatten()),max((bimage/mb).flatten()))
+    map = lupton_rgb.AsinhZScaleMapping(rimage, gimage, bimage)
+    color_image = map.make_rgb_image(rimage, gimage, bimage)
+    return color_image
 
 def logarithm():
     imageData, height, width = numpyarray_from_fits(pathtofile + listimage[counter])
@@ -45,7 +55,7 @@ def logarithm():
         os.remove('foolog.png')
         fenetre.update_idletasks()
     except:
-        print "Error on math.log10 for ", (imageData[i][j] - scale_min)
+        print ("Error on math.log10 for ", (imageData[i][j] - scale_min))
 
 
 def linear():
@@ -179,10 +189,18 @@ def update_non_lens():
     return
 
 
-def numpyarray_from_fits(fits_path,ind_image=0):
+def numpyarray_from_fits(fits_path,ind_image=0,color=False):
     _img = pyfits.open(fits_path)[ind_image].data
-    height, width = np.shape(_img)
-    return _img,height, width
+    try:
+        height, width = np.shape(_img)
+        return _img,height, width
+    except ValueError:
+        n,height,width= np.shape(_img)
+        if color==True:
+            return _img[0],_img[1],_img[2],height,width
+        else:
+            return _img[0],height,width
+
 
 
 def save_csv():
@@ -192,6 +210,23 @@ def save_csv():
 
     except IndexError:
         showinfo("Error", "The list is empty")
+def open_lupton():
+    try:
+        image_R, image_G,image_B ,height, width = numpyarray_from_fits(pathtofile + listimage[counter],color=True)
+        image =showplot_rgb(image_R,image_G,image_B)
+        plt.imshow(image)
+        plt.axis('off')
+        plt.savefig('lupton.png', bbox_inches='tight')
+
+        pilImage = Image.open('lupton.png')
+        global photo
+        photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+
+        canvas.create_image(0, 0, image=photo, anchor=NW)
+        os.remove('lupton.png')
+        fenetre.update_idletasks()
+    except ValueError:
+        showinfo("Error", "Not a color image")
 
 
 if __name__ == '__main__':
@@ -236,5 +271,9 @@ if __name__ == '__main__':
     menu2.add_command(label="Save CSV", command=save_csv)
     menu2.add_separator()
     menubar.add_cascade(label="Save", menu=menu2)
+    menu3 = Menu(menubar, tearoff=0)
+    menu3.add_command(label="Lupton RGB", command=open_lupton)
+    menu3.add_separator()
+    menubar.add_cascade(label="Open as color image", menu=menu3)
     fenetre.config(menu=menubar)
     fenetre.mainloop()
