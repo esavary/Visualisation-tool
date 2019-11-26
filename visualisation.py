@@ -5,6 +5,7 @@ import os
 import glob
 import astropy.io.fits as pyfits
 from astropy.wcs import WCS
+from astropy.visualization import make_lupton_rgb
 
 if sys.version_info[0] < 3:
     from Tkinter import *
@@ -26,6 +27,9 @@ def showplot_rgb(rimage,gimage,bimage):
     map = lupton_rgb.AsinhZScaleMapping(rimage, gimage, bimage)
     color_image = map.make_rgb_image(rimage, gimage, bimage)
     return color_image
+
+
+
 
 def logarithm():
     imageData, height, width = numpyarray_from_fits(pathtofile + listimage[counter])
@@ -134,13 +138,13 @@ def asinh():
 def alert():
     showinfo("alerte", "Bravo!")
 
-def update_lens():
+def update_lens(grade):
     global photo
     global counter
     counter = counter + 1
     if counter < COUNTER_MAX:
         listnames.append(listimage[counter][:-5])
-        classification.append('1')
+        classification.append(str(grade))
 
         image, height, width = numpyarray_from_fits(pathtofile+listimage[counter])
         figure1 = plt.Figure(figsize=(50, 50), dpi=100)
@@ -226,6 +230,7 @@ def open_lupton():
         os.remove('lupton.png')
         fenetre.update_idletasks()
     except ValueError:
+
         showinfo("Error", "Not a color image")
 
 
@@ -256,8 +261,10 @@ if __name__ == '__main__':
 
     canvas.create_image(250, 250, image=photo)
     os.remove('foo.png')
-    Button(fenetre,text="LENS", command=update_lens).pack(side=LEFT, padx=60, pady=5)
-    Button(fenetre,text="NON LENS", command=update_non_lens).pack(side=RIGHT, padx=60, pady=5)
+    Button(fenetre,text="  3  ", command= lambda:update_lens(3)).pack(side=LEFT, padx=60, pady=5)
+    Button(fenetre,text="  2  ", command=lambda:update_lens(2)).pack(side=LEFT, padx=60, pady=5)
+    Button(fenetre, text="  1  ", command=lambda:update_lens(1)).pack(side=LEFT, padx=60, pady=5)
+    Button(fenetre, text="  0  ", command=update_non_lens).pack(side=LEFT, padx=60, pady=5)
     menubar = Menu(fenetre)
 
     menu1 = Menu(menubar, tearoff=0)
