@@ -36,7 +36,7 @@ def changemin_max():
     elif scale_state=='squared':
         squared()
     elif scale_state=='lupton':
-        showinfo("Error", "Not available with lupton RBG")
+        showinfo("Error", "Not available with lupton RGB")
     elif scale_state=='asinh':
         asinh()
     elif scale_state=='log':
