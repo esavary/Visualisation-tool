@@ -3,6 +3,8 @@ import numpy as np
 import sys
 import os
 import glob
+import subprocess
+
 import astropy.io.fits as pyfits
 from astropy.wcs import WCS
 from astropy.visualization import make_lupton_rgb
@@ -18,6 +20,12 @@ from PIL import Image, ImageTk, ImageDraw
 import matplotlib.pyplot as plt
 from astropy.visualization import lupton_rgb
 
+
+#############################################################################################
+#Please enter the path of ds9 executable here:
+pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+
+#############################################################################################
 
 
 def changemin_max():
@@ -159,6 +167,16 @@ def linear():
     canvas.create_image(0, 0, image=photo, anchor=NW)
     os.remove('lin.png')
     fenetre.update_idletasks()
+
+def open_image_in_ds9(pathds9,pathtofile,name):
+
+    p=subprocess.Popen([pathds9, pathtofile+name])
+    returncode = p.wait()
+
+def open_ds9():
+
+    name=listimage[counter]
+    open_image_in_ds9(pathds9, pathtofile, name)
 
 def squared():
     global scale_state
@@ -396,21 +414,22 @@ if __name__ == '__main__':
     menu1.add_command(label="Sqrt", command=squared)
     menu1.add_command(label="Asinh", command=asinh)
     menu1.add_command(label="Histogram", command=new_window1)
+    menu1.add_command(label="Lupton RGB", command=open_lupton)
     menu1.add_separator()
     menubar.add_cascade(label="Change scale", menu=menu1)
     menu2 = Menu(menubar, tearoff=0)
     menu2.add_command(label="Save CSV", command=save_csv)
     menu2.add_separator()
     menubar.add_cascade(label="Save", menu=menu2)
-    menu3 = Menu(menubar, tearoff=0)
-    menu3.add_command(label="Lupton RGB", command=open_lupton)
-    menu3.add_separator()
-    menubar.add_cascade(label="Open as color image", menu=menu3)
     menu4 = Menu(menubar, tearoff=0)
     menu4.add_command(label="Backward", command= lambda: previous_next('past'))
     menu4.add_separator()
     menu4.add_command(label="Forward", command=lambda: previous_next('future'))
     menu4.add_separator()
     menubar.add_cascade(label="Change image", menu=menu4)
+    menu5 = Menu(menubar, tearoff=0)
+    menu5.add_command(label="ds9", command=open_ds9)
+    menu5.add_separator()
+    menubar.add_cascade(label="Open with an external software", menu=menu5)
     fenetre.config(menu=menubar)
     fenetre.mainloop()
