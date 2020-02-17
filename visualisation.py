@@ -4,11 +4,10 @@ import sys
 import os
 import glob
 import subprocess
-
 import astropy.io.fits as pyfits
 from astropy.wcs import WCS
 from astropy.visualization import make_lupton_rgb
-
+import matplotlib
 if sys.version_info[0] < 3:
     from Tkinter import *
     from tkMessageBox import *
@@ -17,6 +16,7 @@ else:
     from tkinter.messagebox import *
 import PIL
 from PIL import Image, ImageTk, ImageDraw
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from astropy.visualization import lupton_rgb
 
