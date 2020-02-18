@@ -248,17 +248,26 @@ def previous_next(timesignal):
             scale_max = np.amax(image)
             figure1 = plt.Figure(figsize=(50, 50), dpi=100)
 
-            plt.imshow(image, cmap='gray', origin='lower')
-            plt.axis('off')
-            plt.savefig('foo.png', bbox_inches='tight')
-            plt.close()
-            pilImage = Image.open('foo.png')
+            if scale_state == 'squared':
+                squared()
 
-            photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+            elif scale_state == 'asinh':
+                asinh()
+            elif scale_state == 'log':
+                logarithm()
+            else:
 
-            canvas.create_image(0, 0, image=photo, anchor=NW)
-            os.remove('foo.png')
-            fenetre.update_idletasks()
+                plt.imshow(image, cmap='gray', origin='lower')
+                plt.axis('off')
+                plt.savefig('foo.png', bbox_inches='tight')
+                plt.close()
+                pilImage = Image.open('foo.png')
+
+                photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+
+                canvas.create_image(0, 0, image=photo, anchor=NW)
+                os.remove('foo.png')
+                fenetre.update_idletasks()
     else:
         if counter+1<=number_graded:
             counter=counter+1
@@ -266,18 +275,25 @@ def previous_next(timesignal):
             scale_min = np.amin(image)
             scale_max = np.amax(image)
             figure1 = plt.Figure(figsize=(50, 50), dpi=100)
+            if scale_state == 'squared':
+                squared()
 
-            plt.imshow(image, cmap='gray', origin='lower')
-            plt.axis('off')
-            plt.savefig('foo.png', bbox_inches='tight')
-            plt.close()
-            pilImage = Image.open('foo.png')
+            elif scale_state == 'asinh':
+                asinh()
+            elif scale_state == 'log':
+                logarithm()
+            else:
+                plt.imshow(image, cmap='gray', origin='lower')
+                plt.axis('off')
+                plt.savefig('foo.png', bbox_inches='tight')
+                plt.close()
+                pilImage = Image.open('foo.png')
 
-            photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+                photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
 
-            canvas.create_image(0, 0, image=photo, anchor=NW)
-            os.remove('foo.png')
-            fenetre.update_idletasks()
+                canvas.create_image(0, 0, image=photo, anchor=NW)
+                os.remove('foo.png')
+                fenetre.update_idletasks()
         else:
             showinfo("Error", "Please grade this image first!")
 
@@ -302,23 +318,33 @@ def update_lens(grade):
             image, height, width = numpyarray_from_fits(pathtofile + listimage[counter-1])
             scale_min = np.amin(image)
             scale_max = np.amax(image)
+            counter=counter -1
         else:
             image, height, width = numpyarray_from_fits(pathtofile+listimage[counter])
             scale_min = np.amin(image)
             scale_max = np.amax(image)
         figure1 = plt.Figure(figsize=(50, 50), dpi=100)
 
-        plt.imshow(image, cmap='gray', origin='lower')
-        plt.axis('off')
-        plt.savefig('foo.png', bbox_inches='tight')
-        plt.close()
-        pilImage = Image.open('foo.png')
+        if scale_state == 'squared':
+            squared()
 
-        photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+        elif scale_state == 'asinh':
+            asinh()
+        elif scale_state == 'log':
+            logarithm()
 
-        canvas.create_image(0, 0, image=photo, anchor=NW)
-        os.remove('foo.png')
-        fenetre.update_idletasks()
+        else:
+            plt.imshow(image, cmap='gray', origin='lower')
+            plt.axis('off')
+            plt.savefig('foo.png', bbox_inches='tight')
+            plt.close()
+            pilImage = Image.open('foo.png')
+
+            photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+
+            canvas.create_image(0, 0, image=photo, anchor=NW)
+            os.remove('foo.png')
+            fenetre.update_idletasks()
     else:
         showinfo("Error", 'No more images to analyse')
         np.savetxt('./classifications/classification_from' +listnames[0] +'to'+listnames[-1]+".csv",
@@ -389,7 +415,7 @@ if __name__ == '__main__':
 
 
     figure1 = plt.Figure(figsize=(50,50), dpi=100)
-    plt.imshow(image, cmap='gray')
+    plt.imshow(image, cmap='gray', origin='lower')
     plt.axis('off')
     plt.savefig('foo.png', bbox_inches='tight')
     plt.close()
