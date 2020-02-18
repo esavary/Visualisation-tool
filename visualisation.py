@@ -125,7 +125,7 @@ def logarithm():
     try:
         imageData[indices1] =  np.log10(imageData[indices1]) / (factor*1.0)
 
-        plt.imshow(imageData, cmap='gray')
+        plt.imshow(imageData, cmap='gray', origin='lower')
         plt.axis('off')
         plt.savefig('foolog.png', bbox_inches='tight')
         plt.close()
@@ -155,7 +155,7 @@ def linear():
     imageData[indices] = 1.0
 
 
-    plt.imshow(imageData, cmap='gray')
+    plt.imshow(imageData, cmap='gray', origin='lower')
     plt.axis('off')
     plt.savefig('lin.png', bbox_inches='tight')
     plt.close()
@@ -191,7 +191,7 @@ def squared():
     imageData[indices] = 0.0
     imageData = np.sqrt(imageData)
     imageData = imageData / math.sqrt(scale_max - scale_min)
-    plt.imshow(imageData, cmap='gray')
+    plt.imshow(imageData, cmap='gray', origin='lower')
     plt.axis('off')
     plt.savefig('sqrt.png', bbox_inches='tight')
     plt.close()
@@ -218,7 +218,7 @@ def asinh():
     imageData[indices0] = 0.0
     imageData[indices2] = 1.0
     imageData[indices1] = np.arcsinh((imageData[indices1] - scale_min) / 2.0) / factor
-    plt.imshow(imageData, cmap='gray')
+    plt.imshow(imageData, cmap='gray', origin='lower')
     plt.axis('off')
     plt.savefig('sinh.png', bbox_inches='tight')
     plt.close()
@@ -248,7 +248,7 @@ def previous_next(timesignal):
             scale_max = np.amax(image)
             figure1 = plt.Figure(figsize=(50, 50), dpi=100)
 
-            plt.imshow(image, cmap='gray')
+            plt.imshow(image, cmap='gray', origin='lower')
             plt.axis('off')
             plt.savefig('foo.png', bbox_inches='tight')
             plt.close()
@@ -267,7 +267,7 @@ def previous_next(timesignal):
             scale_max = np.amax(image)
             figure1 = plt.Figure(figsize=(50, 50), dpi=100)
 
-            plt.imshow(image, cmap='gray')
+            plt.imshow(image, cmap='gray', origin='lower')
             plt.axis('off')
             plt.savefig('foo.png', bbox_inches='tight')
             plt.close()
@@ -308,7 +308,7 @@ def update_lens(grade):
             scale_max = np.amax(image)
         figure1 = plt.Figure(figsize=(50, 50), dpi=100)
 
-        plt.imshow(image, cmap='gray')
+        plt.imshow(image, cmap='gray', origin='lower')
         plt.axis('off')
         plt.savefig('foo.png', bbox_inches='tight')
         plt.close()
@@ -354,7 +354,7 @@ def open_lupton():
     try:
         image_R, image_G,image_B ,height, width = numpyarray_from_fits(pathtofile + listimage[counter],color=True)
         image =showplot_rgb(image_R,image_G,image_B)
-        plt.imshow(image)
+        plt.imshow(image, origin='lower')
         plt.axis('off')
         plt.savefig('lupton.png', bbox_inches='tight')
         plt.close()
@@ -375,7 +375,7 @@ def open_lupton():
 if __name__ == '__main__':
 
     pathtofile='./files_to_visualize/'
-    listimage=os.listdir(pathtofile)
+    listimage=sorted(os.listdir(pathtofile))
     counter=0
     number_graded=0
     COUNTER_MAX=len(listimage)
