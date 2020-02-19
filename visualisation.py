@@ -348,7 +348,7 @@ def update_lens(grade):
     else:
         showinfo("Error", 'No more images to analyse')
         np.savetxt('./classifications/classification_from' +listnames[0] +'to'+listnames[-1]+".csv",
-                   np.transpose(np.array([listnames, classification], dtype='U25')), delimiter=",", fmt='%s')
+                   np.transpose(np.array([listnames, classification], dtype='U35')), delimiter=",", fmt='%s')
     return
 
 
@@ -372,7 +372,7 @@ def save_csv():
         showinfo("Error", "Empty list")
     else:
         np.savetxt('./classifications/classification_from' + listnames[0] + 'to' + listnames[counter] + ".csv",
-                   np.transpose(np.array([listnames[0:counter], classification[0:counter]], dtype='U25')), delimiter=",", fmt='%s')
+                   np.transpose(np.array([listnames[0:counter], classification[0:counter]], dtype='U35')), delimiter=",", fmt='%s')
 
 
 def open_lupton():
