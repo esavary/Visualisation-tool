@@ -318,37 +318,58 @@ def update_lens(grade):
             image, height, width = numpyarray_from_fits(pathtofile + listimage[counter-1])
             scale_min = np.amin(image)
             scale_max = np.amax(image)
-            counter=counter -1
+            figure1 = plt.Figure(figsize=(50, 50), dpi=100)
+
+            if scale_state == 'squared':
+                squared()
+
+            elif scale_state == 'asinh':
+                asinh()
+            elif scale_state == 'log':
+                logarithm()
+
+            else:
+                plt.imshow(image, cmap='gray', origin='lower')
+                plt.axis('off')
+                plt.savefig('foo.png', bbox_inches='tight')
+                plt.close()
+                pilImage = Image.open('foo.png')
+
+                photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+
+                canvas.create_image(0, 0, image=photo, anchor=NW)
+                os.remove('foo.png')
+                fenetre.update_idletasks()
         else:
             image, height, width = numpyarray_from_fits(pathtofile+listimage[counter])
             scale_min = np.amin(image)
             scale_max = np.amax(image)
-        figure1 = plt.Figure(figsize=(50, 50), dpi=100)
+            figure1 = plt.Figure(figsize=(50, 50), dpi=100)
 
-        if scale_state == 'squared':
-            squared()
+            if scale_state == 'squared':
+                squared()
 
-        elif scale_state == 'asinh':
-            asinh()
-        elif scale_state == 'log':
-            logarithm()
+            elif scale_state == 'asinh':
+                asinh()
+            elif scale_state == 'log':
+                logarithm()
 
-        else:
-            plt.imshow(image, cmap='gray', origin='lower')
-            plt.axis('off')
-            plt.savefig('foo.png', bbox_inches='tight')
-            plt.close()
-            pilImage = Image.open('foo.png')
+            else:
+                plt.imshow(image, cmap='gray', origin='lower')
+                plt.axis('off')
+                plt.savefig('foo.png', bbox_inches='tight')
+                plt.close()
+                pilImage = Image.open('foo.png')
 
-            photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
+                photo = PIL.ImageTk.PhotoImage(image=pilImage.resize((500, 500)))
 
-            canvas.create_image(0, 0, image=photo, anchor=NW)
-            os.remove('foo.png')
-            fenetre.update_idletasks()
+                canvas.create_image(0, 0, image=photo, anchor=NW)
+                os.remove('foo.png')
+                fenetre.update_idletasks()
     else:
         showinfo("Error", 'No more images to analyse')
         np.savetxt('./classifications/classification_from' +listnames[0] +'to'+listnames[-1]+".csv",
-                   np.transpose(np.array([listnames, classification], dtype='U35')), delimiter=",", fmt='%s')
+                   np.transpose(np.array([listnames, classification], dtype='U40')), delimiter=",", fmt='%s')
     return
 
 
@@ -372,7 +393,7 @@ def save_csv():
         showinfo("Error", "Empty list")
     else:
         np.savetxt('./classifications/classification_from' + listnames[0] + 'to' + listnames[counter] + ".csv",
-                   np.transpose(np.array([listnames[0:counter], classification[0:counter]], dtype='U35')), delimiter=",", fmt='%s')
+                   np.transpose(np.array([listnames[0:counter], classification[0:counter]], dtype='U40')), delimiter=",", fmt='%s')
 
 
 def open_lupton():
