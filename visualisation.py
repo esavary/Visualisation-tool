@@ -19,11 +19,12 @@ from PIL import Image, ImageTk, ImageDraw
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from astropy.visualization import lupton_rgb
-
+from astropy.io import fits
 
 #############################################################################################
 #Please enter the path of ds9 executable here:
-pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+#pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+pathds9 = '/usr/local/bin/ds9'
 
 #############################################################################################
 
@@ -54,11 +55,6 @@ def changemin_max():
 
 
 def showplot_rgb(rimage,gimage,bimage):
-    mr=max(rimage.flatten())
-    mg=max(gimage.flatten())
-    mb=max(bimage.flatten())
-    minval = min(min((rimage/mr).flatten()),min((gimage/mg).flatten()),min((bimage/mb).flatten()))
-    maxval = max(max((rimage/mr).flatten()),max((gimage/mg).flatten()),max((bimage/mb).flatten()))
     map = lupton_rgb.AsinhZScaleMapping(rimage, gimage, bimage)
     color_image = map.make_rgb_image(rimage, gimage, bimage)
     return color_image
@@ -399,7 +395,8 @@ def save_csv():
 def open_lupton():
     global scale_state
     try:
-        image_R, image_G,image_B ,height, width = numpyarray_from_fits(pathtofile + listimage[counter],color=True)
+        #image_R, image_G,image_B ,height, width = numpyarray_from_fits(pathtofile + listimage[counter],color=True)
+        image_B, image_G,image_R=[fits.open(pathtofile + listimage[counter])[0].data,fits.open(pathtofile + listimage[counter])[1].data,fits.open(pathtofile + listimage[counter])[2].data]
         image =showplot_rgb(image_R,image_G,image_B)
         plt.imshow(image, origin='lower')
         plt.axis('off')
