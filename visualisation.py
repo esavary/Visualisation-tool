@@ -53,12 +53,76 @@ def changemin_max():
     else:
         print ('unknown scale')
 
+def background_rms_image(cb,image):
+    xg,yg = np.shape(image)
+    cut0  = image[0:cb,0:cb]
+    cut1  = image[xg-cb:xg,0:cb]
+    cut2  = image[0:cb,yg-cb:yg]
+    cut3  = image[xg-cb:xg,yg-cb:yg]
+    top   = np.concatenate((cut0,cut1),axis=1)
+    bot   = np.concatenate((cut2,cut3),axis=1)
+    cube  = np.concatenate((top,bot),axis=0)
+    std   = np.std(cube)
+    return std
+
+#def showplot_rgb(rimage,gimage,bimage):
+#    bgr = background_rms_image(8,rimage)
+#    bgg = background_rms_image(8,gimage)
+#    bgb = background_rms_image(8,bimage)
+#    map = lupton_rgb.AsinhZScaleMapping(rimage, gimage, bimage,pedestal=[bgr,bgg,bgb],Q=5)
+#    color_image = map.make_rgb_image(rimage, gimage, bimage)
+#    return color_image
+
+
+def log_sc(inputArray, scale_min=None, scale_max=None):
+
+    imageData = np.array(inputArray, copy=True)
+
+    if scale_min is None:
+        scale_min = imageData.min()
+    if scale_max is None:
+        scale_max = imageData.max()
+
+    imageData = imageData.clip(min=scale_min, max=scale_max)
+    imageData = imageData - scale_min
+    indices = np.where(imageData < 0)
+    imageData[indices] = 0.00001
+    imageData = np.log10(imageData)
+    imageData = imageData / np.log10(scale_max - scale_min)
+    return imageData
+
+def sqrt_sc(inputArray, scale_min=None, scale_max=None):
+
+    imageData = np.array(inputArray, copy=True)
+
+    if scale_min is None:
+        scale_min = imageData.min()
+    if scale_max is None:
+        scale_max = imageData.max()
+
+    imageData = imageData.clip(min=scale_min, max=scale_max)
+    imageData = imageData - scale_min
+    indices = np.where(imageData < 0)
+    imageData[indices] = 0.00001
+    imageData = np.sqrt(imageData)
+    imageData = imageData / np.sqrt(scale_max - scale_min)
+    return imageData
 
 def showplot_rgb(rimage,gimage,bimage):
-    map = lupton_rgb.AsinhZScaleMapping(rimage, gimage, bimage)
-    color_image = map.make_rgb_image(rimage, gimage, bimage)
-    return color_image
+#    import lenstronomy.Plots.plot_util as plot_util
+    vmin= np.min([background_rms_image(5,rimage),background_rms_image(5,gimage),background_rms_image(5,bimage)])#np.min([rimage,gimage,bimage])
+    xl,yl=np.shape(rimage)
+    box_size = 14 #in pixel
+    xmin = int((xl)/2-(box_size/2))
+    xmax = int((xl)/2+(box_size/2))
+    vmax=np.max([rimage[xmin:xmax,xmin:xmax],gimage[xmin:xmax,xmin:xmax],bimage[xmin:xmax,xmin:xmax]])
+    img = np.zeros((rimage.shape[0], rimage.shape[1], 3), dtype=float)
+    img[:,:,0] = sqrt_sc(rimage, scale_min=vmin, scale_max=vmax)#np.max(rimage))
+    img[:,:,1] = sqrt_sc(gimage, scale_min=vmin, scale_max=vmax)#np.max(gimage))
+    img[:,:,2] = sqrt_sc(bimage, scale_min=vmin, scale_max=vmax)#np.max(bimage))
+    return img
 
+#do a cube around the middle get the flux and used as a cut
 
 def new_window1():
     global win1
