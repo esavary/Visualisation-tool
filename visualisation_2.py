@@ -69,6 +69,26 @@ class CustomSlider(Slider):
 
 class BoxLayout_main(App):
 
+    def background_rms_image(self,cb, image):
+        xg, yg = np.shape(image)
+        cut0 = image[0:cb, 0:cb]
+        cut1 = image[xg - cb:xg, 0:cb]
+        cut2 = image[0:cb, yg - cb:yg]
+        cut3 = image[xg - cb:xg, yg - cb:yg]
+        std = np.std([cut0, cut1, cut2, cut3])
+        return std
+
+    def scale_val(self,image_array):
+        if len(np.shape(image_array)) == 2:
+            image_array = [image_array]
+        vmin = np.min([self.background_rms_image(5, image_array[i]) for i in range(len(image_array))])
+        xl, yl = np.shape(image_array[0])
+        box_size = 14  # in pixel
+        xmin = int((xl) / 2. - (box_size / 2.))
+        xmax = int((xl) / 2. + (box_size / 2.))
+        vmax = np.max([image_array[i][xmin:xmax, xmin:xmax] for i in range(len(image_array))])
+        return vmin, vmax
+
     def numpyarray_from_fits(self,fits_path, ind_image=0, color=False):
 
         _img = pyfits.open(fits_path)[ind_image].data
@@ -83,14 +103,15 @@ class BoxLayout_main(App):
                 return _img[0], height, width
 
     def draw_plot(self,scale_state,defaultvalue=True,max=1,min=0):
+
+
         image, height, width = self.numpyarray_from_fits(self.pathtofile + self.listimage[self.counter])
 
         if defaultvalue==True:
-            self.scale_min = np.amin(image)
-
-            self.scale_max = np.amax(image)
-
-            self.step = (self.scale_max - self.scale_min) / 10.
+            self.scale_min, self.scale_max = self.scale_val(image)
+            self.limit_max=np.amax(image)
+            self.limit_min=np.amax(image)
+            self.step = (self.limit_max - self.limit_min) / 10.
 
         else:
             self.scale_min = min
@@ -159,7 +180,7 @@ class BoxLayout_main(App):
     def update(self,event):
         self.diplaystate = 0
         plt.clf()
-
+        self.textnumber.text = str(self.counter)
         self.draw_plot(self.scale_state)
         self.oo.draw_idle()
 
@@ -211,10 +232,34 @@ class BoxLayout_main(App):
             popup.open()
         else:
             self.update(event)
+    def change_number(self,event):
+        try:
+            number=int(self.textnumber.text)
+        except ValueError:
+            number =self.counter
+            popup = Popup(title=' ', content=Label(text='Not an int'), size_hint=(None, None),
+                          size=(400, 100))
+            popup.open()
+
+        if number < self.COUNTER_MIN:
+            popup = Popup(title=' ', content=Label(text='Wrong number'), size_hint=(None, None),
+                          size=(400, 100))
+            popup.open()
+        elif number>self.COUNTER_MAX-1:
+            popup = Popup(title=' ', content=Label(text='Wrong number'), size_hint=(None, None),
+                          size=(400, 100))
+            popup.open()
+        else:
+            self.counter=number
+            self.update(event)
+
+
+
+
     def classify(self,grade,event):
         self.classification[self.counter] = str(grade)
         self.forward(event)
-        
+
     def build(self):
         self.pathtofile = './files_to_visualize/'
 
@@ -228,6 +273,8 @@ class BoxLayout_main(App):
         self.classification = ['None'] * len(self.listimage)
         self.scale_min = 0
         self.scale_max = 1
+        self.limit_max=1
+        self.limit_min = 0
         self.step=(self.scale_max-self.scale_min)/10.
 
         self.scale_state = 'asinh'
@@ -240,14 +287,14 @@ class BoxLayout_main(App):
         self.oo = FigureCanvasKivyAgg(plt.gcf(),size_hint_x=0.8)
         superBox = BoxLayout(orientation='vertical')
 
-        horizontalBoxup = BoxLayout(orientation='vertical',size_hint_y=0.1)
+        horizontalBoxup = BoxLayout(orientation='horizontal',size_hint_y=0.1)
 
         horizontalBox = BoxLayout(orientation='horizontal')
 
         #button1 = Button(text="One",size_hint_x=0.1)
 
-        self.slider1 = CustomSlider(orientation='vertical',size_hint_x=0.1,min=self.scale_min, max=self.scale_max, step=self.step,value=self.scale_min)
-        self.slider2 = CustomSlider(orientation='vertical', size_hint_x=0.1,min=self.scale_min, max=self.scale_max, step=self.step,value=self.scale_max)
+        self.slider1 = CustomSlider(orientation='vertical',size_hint_x=0.1,min=self.limit_min, max=self.limit_max, step=self.step,value=self.scale_min)
+        self.slider2 = CustomSlider(orientation='vertical', size_hint_x=0.1,min=self.limit_min, max=self.limit_max, step=self.step,value=self.scale_max)
         self.slider1.bind(value = self.min_slider_release)
         self.slider2.bind(value =self.max_slider_release)
         horizontalBox.add_widget(self.slider1)
@@ -261,10 +308,10 @@ class BoxLayout_main(App):
 
         button3 = Button(text="Sure Lens")
 
-        button3.bind(on_press=self.forward)
+
 
         button4 = Button(text="Maybe Lens")
-        button4.bind(on_press=self.backward)
+
         button5 = Button(text="Non Lens")
         button6 = Button(text="Merger")
         button7 = Button(text="Spiral")
@@ -286,9 +333,16 @@ class BoxLayout_main(App):
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
 
 
-        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1))
+        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.8)
         savebutton.bind(on_press=self.save_csv)
+        self.textnumber = TextInput(text=str(self.counter), multiline=False,font_size=25, size_hint_x=0.1)
+        self.textnumber.bind(on_text_validate=self.change_number)
+        tnumber=Label(text=str(' / '+str(self.COUNTER_MAX)),font_size=25, size_hint_x=0.1)
+
+
         horizontalBoxup.add_widget(savebutton)
+        horizontalBoxup.add_widget(self.textnumber)
+        horizontalBoxup.add_widget(tnumber)
 
         verticalBox.add_widget(button3)
 
