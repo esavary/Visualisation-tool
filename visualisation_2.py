@@ -21,6 +21,11 @@ import matplotlib.pyplot as plt
 from functools import partial
 
 
+
+
+
+
+
 # Boxlayout is the App class
 class SaveDialog(Popup):
 
@@ -253,14 +258,24 @@ class BoxLayout_main(App):
             self.counter=number
             self.update(event)
 
+    def open_image_in_ds9(self,pathds9, pathtofile, name):
 
+        os.system(pathds9 + ' ' + pathtofile + name + ' ' + '-zoom 8')
 
+    def open_ds9(self,event):
+
+        name = self.listimage[self.counter]
+        self.open_image_in_ds9(self.pathds9, self.pathtofile, name)
 
     def classify(self,grade,event):
         self.classification[self.counter] = str(grade)
         self.forward(event)
 
     def build(self):
+        # Please enter the path of ds9 executable here:
+        self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+
+
         self.pathtofile = './files_to_visualize/'
 
         self.listimage = sorted(os.listdir('./files_to_visualize/'))
@@ -333,13 +348,16 @@ class BoxLayout_main(App):
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
 
 
-        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.8)
+        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.7)
         savebutton.bind(on_press=self.save_csv)
         self.textnumber = TextInput(text=str(self.counter), multiline=False,font_size=25, size_hint_x=0.1)
         self.textnumber.bind(on_text_validate=self.change_number)
         tnumber=Label(text=str(' / '+str(self.COUNTER_MAX)),font_size=25, size_hint_x=0.1)
+        buttonds9 = Button(text="ds9",font_size=25, size_hint_x=0.1)
+        buttonds9.bind(on_press=self.open_ds9)
 
 
+        horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
         horizontalBoxup.add_widget(self.textnumber)
         horizontalBoxup.add_widget(tnumber)
