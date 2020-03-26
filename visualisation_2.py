@@ -92,7 +92,7 @@ class BoxLayout_main(App):
         xmin = int((xl) / 2. - (box_size / 2.))
         xmax = int((xl) / 2. + (box_size / 2.))
         vmax = np.max([image_array[i][xmin:xmax, xmin:xmax] for i in range(len(image_array))])
-        return vmin, vmax
+        return vmin/2, vmax*2
 
     def numpyarray_from_fits(self,fits_path, ind_image=0, color=False):
 
