@@ -189,7 +189,7 @@ class BoxLayoutColor(BoxLayout_main):
                 image_G[indices0] = 0.0
                 image_G[indices2] = 1.0
                 image_G[indices1] = np.arcsinh((image_G[indices1] - self.scale_min_g) / 2.0) / factor
-
+            
             plt.subplot(2, 2, 1)
             plt.imshow(image_R)
             plt.style.use('dark_background')
@@ -200,6 +200,7 @@ class BoxLayoutColor(BoxLayout_main):
             plt.style.use('dark_background')
             plt.axis('off')
 
+
             plt.subplot(2, 2, 3)
             plt.imshow(image_B)
             plt.style.use('dark_background')
@@ -209,7 +210,7 @@ class BoxLayoutColor(BoxLayout_main):
             plt.imshow(image_color)
             plt.style.use('dark_background')
             plt.axis('off')
-            plt.tight_layout()
+
 
         except ValueError:
             print('not a color image')
@@ -217,7 +218,7 @@ class BoxLayoutColor(BoxLayout_main):
     def build(self):
         # Please enter the path of ds9 executable here:
         self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
-        print('Child build used')
+
         self.pathtofile = './files_to_visualize/'
 
         self.listimage = sorted(os.listdir('./files_to_visualize/'))
