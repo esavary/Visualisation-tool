@@ -18,6 +18,7 @@ from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
 import matplotlib.pyplot as plt
 from functools import partial
+from kivy.core.window import Window
 class BoxLayoutColor(BoxLayout_main):
 
 
@@ -189,7 +190,7 @@ class BoxLayoutColor(BoxLayout_main):
                 image_G[indices0] = 0.0
                 image_G[indices2] = 1.0
                 image_G[indices1] = np.arcsinh((image_G[indices1] - self.scale_min_g) / 2.0) / factor
-            
+
             plt.subplot(2, 2, 1)
             plt.imshow(image_R)
             plt.style.use('dark_background')
@@ -325,6 +326,8 @@ class BoxLayoutColor(BoxLayout_main):
 
         superBox.add_widget(verticalBox1)
         superBox.add_widget(verticalBox)
+        self._keyboard = Window.request_keyboard(self, self._keyboard_closed)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
         return superBox
 
