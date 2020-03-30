@@ -19,6 +19,7 @@ from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
 import matplotlib.pyplot as plt
 from functools import partial
+from kivy.core.window import Window
 
 
 
@@ -47,6 +48,9 @@ class SaveDialog(Popup):
         self.content.add_widget(self.name_input)
         self.content.add_widget(self.cancel_button)
 
+
+
+
     def save(self,*args):
         print( "save ",self.name_input.text)
         np.savetxt( './classifications/'+self.name_input.text+ '.csv',
@@ -74,6 +78,29 @@ class CustomSlider(Slider):
 
 class BoxLayout_main(App):
 
+    
+    def _keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+    
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == '1':
+            self.classify('L',keyboard)
+        elif keycode[1] == '2':
+            self.classify('ML',keyboard)
+        elif keycode[1] == '3':
+            self.classify('NL',keyboard)
+        elif keycode[1] == '4':
+            self.classify('Merger',keyboard)
+        elif keycode[1] == '5':
+            self.classify('Merger',keyboard)
+        elif keycode[1] == '6':
+            self.classify('Ring',keyboard)
+        return True
+
+
+
+
     def background_rms_image(self,cb, image):
         xg, yg = np.shape(image)
         cut0 = image[0:cb, 0:cb]
@@ -92,7 +119,7 @@ class BoxLayout_main(App):
         xmin = int((xl) / 2. - (box_size / 2.))
         xmax = int((xl) / 2. + (box_size / 2.))
         vmax = np.max([image_array[i][xmin:xmax, xmin:xmax] for i in range(len(image_array))])
-        return vmin/2, vmax*2
+        return vmin, vmax
 
     def numpyarray_from_fits(self,fits_path, ind_image=0, color=False):
 
@@ -269,6 +296,7 @@ class BoxLayout_main(App):
 
     def classify(self,grade,event):
         self.classification[self.counter] = str(grade)
+        print(self.classification)
         self.forward(event)
 
     def build(self):
@@ -295,9 +323,8 @@ class BoxLayout_main(App):
         self.scale_state = 'asinh'
         self.diplaystate=0
 
-
-
-
+        self._keyboard = Window.request_keyboard(self,self._keyboard_closed)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
         self.oo = FigureCanvasKivyAgg(plt.gcf(),size_hint_x=0.8)
         superBox = BoxLayout(orientation='vertical')
