@@ -107,8 +107,6 @@ def showplot_rgb(rimage,gimage,bimage):
     img[:,:,2] = sqrt_sc(bimage, scale_min=vmin, scale_max=vmax)
     return img
 
-def legacy_survey(image):
-    a=1
 
 
 def new_window1():
