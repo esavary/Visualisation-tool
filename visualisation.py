@@ -97,7 +97,7 @@ def scale_val(image_array):
     xmin = int((xl)/2-(box_size/2))
     xmax = int((xl)/2+(box_size/2))
     vmax = np.max([image_array[i][xmin:xmax,xmin:xmax] for i in range(len(image_array))])
-    return vmin,vmax
+    return vmin/2,vmax*2
 
 def showplot_rgb(rimage,gimage,bimage):
     vmin,vmax=scale_val([rimage,gimage,bimage])
@@ -107,6 +107,8 @@ def showplot_rgb(rimage,gimage,bimage):
     img[:,:,2] = sqrt_sc(bimage, scale_min=vmin, scale_max=vmax)
     return img
 
+def legacy_survey(image):
+    a=1
 
 
 def new_window1():
@@ -431,7 +433,24 @@ def numpyarray_from_fits(fits_path,ind_image=0,color=False):
         else:
             return _img[0],height,width
 
-
+def get_legacy_survey(counter):
+    import urllib.request
+    import pandas as pd
+    s_path='./files_to_visualize/'
+    sam=glob.glob(s_path+'*.csv')
+    if len(sam)==1:
+        sample=pd.read_csv(sam[0])
+        ra=sample.iloc[counter]['ra']
+        dec=sample.iloc[counter]['dec']
+        savedir ='./legacy_survey/'
+        url = 'http://legacysurvey.org/viewer/cutout.jpg?ra='+str(ra)+'&dec='+str(dec)+'&layer=dr8&pixscale=0.06'
+        savename = str(ra)+'_'+str(dec)+'dr8.jpg'
+        urllib.request.urlretrieve(url, savedir+savename)
+        url = 'http://legacysurvey.org/viewer/cutout.jpg?ra='+str(ra)+'&dec='+str(dec)+'&layer=dr8-resid&pixscale=0.06'
+        savename = str(ra)+'_'+str(dec)+'dr8-resid.jpg'
+        urllib.request.urlretrieve(url, savedir+savename)
+    if len(sam)==0:
+        print('Error: Provide a csv file with ra,dec keywords for all the files in the folder')
 
 def save_csv():
     if counter==0:
@@ -473,6 +492,8 @@ if __name__ == '__main__':
     number_graded=0
     COUNTER_MAX=len(listimage)
     image, height, width=numpyarray_from_fits(pathtofile+listimage[0])
+
+
     listnames=['None'] * len(listimage)
     classification=['None'] * len(listimage)
     scale_min = np.amin(image)
