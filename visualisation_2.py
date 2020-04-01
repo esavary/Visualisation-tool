@@ -5,6 +5,8 @@ import numpy as np
 import sys
 import os
 import glob
+import urllib.request
+import pandas as pd
 from astropy.wcs import WCS
 from astropy.visualization import make_lupton_rgb
 import astropy.io.fits as pyfits
@@ -78,11 +80,11 @@ class CustomSlider(Slider):
 
 class BoxLayout_main(App):
 
-    
+
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
-    
+
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if keycode[1] == '1':
             self.classify('L',keyboard)
@@ -288,6 +290,7 @@ class BoxLayout_main(App):
     def open_image_in_ds9(self,pathds9, pathtofile, name):
 
         os.system(pathds9 + ' ' + pathtofile + name + ' ' + '-zoom 8')
+        #os.system(pathds9 + ' ' + '-rgb - red '+pathtofile + name+' \ - green '+pathtofile + name+' \ - blue '+ pathtofile + name)
 
     def open_ds9(self,event):
 
@@ -298,6 +301,29 @@ class BoxLayout_main(App):
         self.classification[self.counter] = str(grade)
         print(self.classification)
         self.forward(event)
+
+    def get_legacy_survey(self,event):
+        s_path = './csv_catalog/'
+        sam = glob.glob(s_path + '*.csv')
+        if len(sam) == 1:
+            sample = pd.read_csv(sam[0])
+            ra = sample.iloc[self.counter]['ra']
+            dec = sample.iloc[self.counter]['dec']
+            savedir = './legacy_survey/'
+            url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
+                dec) + '&layer=dr8&pixscale=0.06'
+            savename = str(ra) + '_' + str(dec) + 'dr8.jpg'
+            urllib.request.urlretrieve(url, savedir + savename)
+            url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
+                dec) + '&layer=dr8-resid&pixscale=0.06'
+            savename = str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
+            urllib.request.urlretrieve(url, savedir + savename)
+        if len(sam) == 0:
+            popup = Popup(title='Error', content=Label(text='Provide a csv file with ra,dec keywords for all the files in the folder'), size_hint=(None, None),
+                          size=(600, 200))
+            popup.open()
+
+
 
     def build(self):
         # Please enter the path of ds9 executable here:
@@ -322,10 +348,12 @@ class BoxLayout_main(App):
 
         self.scale_state = 'asinh'
         self.diplaystate=0
-
+        '''
         self._keyboard = Window.request_keyboard(self,self._keyboard_closed)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        '''
 
+        
         self.oo = FigureCanvasKivyAgg(plt.gcf(),size_hint_x=0.8)
         superBox = BoxLayout(orientation='vertical')
 
@@ -375,15 +403,17 @@ class BoxLayout_main(App):
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
 
 
-        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.7)
+        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.6)
         savebutton.bind(on_press=self.save_csv)
+        LSbutton = Button(text="LS", font_size=25, size_hint_x=0.1)
+        LSbutton.bind(on_press=self.get_legacy_survey)
         self.textnumber = TextInput(text=str(self.counter), multiline=False,font_size=25, size_hint_x=0.1)
         self.textnumber.bind(on_text_validate=self.change_number)
-        tnumber=Label(text=str(' / '+str(self.COUNTER_MAX)),font_size=25, size_hint_x=0.1)
+        tnumber=Label(text=str(' / '+str(self.COUNTER_MAX-1)),font_size=25, size_hint_x=0.1)
         buttonds9 = Button(text="ds9",font_size=25, size_hint_x=0.1)
         buttonds9.bind(on_press=self.open_ds9)
 
-
+        horizontalBoxup.add_widget(LSbutton)
         horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
         horizontalBoxup.add_widget(self.textnumber)
