@@ -4,6 +4,8 @@ import numpy as np
 import sys
 import os
 import glob
+import urllib.request
+import pandas as pd
 from astropy.wcs import WCS
 from astropy.visualization import make_lupton_rgb
 import astropy.io.fits as pyfits
@@ -289,14 +291,17 @@ class BoxLayoutColor(BoxLayout_main):
         buttonscale3.bind(on_press=partial(self.change_scale, 'log'))
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
 
+        LSbutton = Button(text="LS", font_size=25, size_hint_x=0.1)
+        LSbutton.bind(on_press=self.get_legacy_survey)
         savebutton = Button(text="Save csv", background_color=(0, 1, 0.4, 1), font_size=25, size_hint_x=0.7)
         savebutton.bind(on_press=self.save_csv)
         self.textnumber = TextInput(text=str(self.counter), multiline=False, font_size=25, size_hint_x=0.1)
         self.textnumber.bind(on_text_validate=self.change_number)
-        tnumber = Label(text=str(' / ' + str(self.COUNTER_MAX)), font_size=25, size_hint_x=0.1)
+        tnumber = Label(text=str(' / ' + str(self.COUNTER_MAX-1)), font_size=25, size_hint_x=0.1)
         buttonds9 = Button(text="ds9", font_size=25, size_hint_x=0.1)
         buttonds9.bind(on_press=self.open_ds9)
 
+        horizontalBoxup.add_widget(LSbutton)
         horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
         horizontalBoxup.add_widget(self.textnumber)
@@ -326,9 +331,10 @@ class BoxLayoutColor(BoxLayout_main):
 
         superBox.add_widget(verticalBox1)
         superBox.add_widget(verticalBox)
+        '''
         self._keyboard = Window.request_keyboard(self, self._keyboard_closed)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
-
+        '''
         return superBox
 
 
