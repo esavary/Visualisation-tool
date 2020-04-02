@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("Agg")
 from visualisation_2 import BoxLayout_main
 import math
 import numpy as np
@@ -73,9 +75,13 @@ class BoxLayoutColor(BoxLayout_main):
 
         try:
 
-            image_B, image_G, image_R = [pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data[0],
-                                         pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data[1],
-                                         pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data[2]]
+
+
+            image_B, image_G, image_R = [pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data,
+                                         pyfits.open(self.pathtofile + self.listimage[self.counter])[1].data,
+                                         pyfits.open(self.pathtofile + self.listimage[self.counter])[2].data]
+
+            print (np.shape(image_B),np.shape(image_R),np.shape(image_G))
             image_color = self.showplot_rgb(image_R, image_G, image_B)
 
             if defaultvalue == True:
