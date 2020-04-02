@@ -1,5 +1,7 @@
 
 # imports
+import matplotlib
+matplotlib.use("Agg")
 import math
 import numpy as np
 import sys
@@ -353,7 +355,7 @@ class BoxLayout_main(App):
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         '''
 
-        
+
         self.oo = FigureCanvasKivyAgg(plt.gcf(),size_hint_x=0.8)
         superBox = BoxLayout(orientation='vertical')
 
