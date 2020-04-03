@@ -11,7 +11,8 @@ New: you can open the image in ds9 but you need to specify the path to your ds9 
 New version:
 
 visualisation_2.py for 1 band images
-visualisation_color for 3 bands images
+visualisation_color color images datacube
+The new version is compatible only with python 3.
 
 Necessary modules for the new version:
 - pandas
