@@ -199,6 +199,7 @@ class BoxLayoutColor(BoxLayout_main):
                 image_G[indices2] = 1.0
                 image_G[indices1] = np.arcsinh((image_G[indices1] - self.scale_min_g) / 2.0) / factor
 
+            plt.style.use('dark_background')
             plt.subplot(2, 2, 1)
             plt.imshow(image_R)
             plt.style.use('dark_background')
@@ -219,6 +220,9 @@ class BoxLayoutColor(BoxLayout_main):
             plt.imshow(image_color)
             plt.style.use('dark_background')
             plt.axis('off')
+
+            plt.subplots_adjust(top=0.99, bottom=0.01, left=0.01, right=0.99, hspace=0.0,
+            wspace=0.0)
 
 
         except ValueError:
@@ -256,7 +260,7 @@ class BoxLayoutColor(BoxLayout_main):
         self.scale_state = 'asinh'
         self.diplaystate = 0
 
-        self.oo = FigureCanvasKivyAgg(plt.gcf(), size_hint_x=0.8)
+        self.oo = FigureCanvasKivyAgg(plt.gcf())
         superBox = BoxLayout(orientation='vertical')
 
         horizontalBoxup = BoxLayout(orientation='horizontal', size_hint_y=0.1)
