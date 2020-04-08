@@ -69,6 +69,8 @@ class BoxLayoutColor(BoxLayout_main):
         self.textnumber.text = str(self.counter)
         self.draw_plot(self.scale_state)
         self.oo.draw_idle()
+        self.tclass.text = self.classification[self.counter]
+        self.tsubclass.text = self.subclassification[self.counter]
 
 
     def draw_plot(self,scale_state,defaultvalue=True,max=1,min=0):
@@ -242,6 +244,7 @@ class BoxLayoutColor(BoxLayout_main):
 
         self.listnames = ['None'] * len(self.listimage)
         self.classification = ['None'] * len(self.listimage)
+        self.subclassification = ['None'] * len(self.listimage)
         self.scale_min = 0
         self.scale_max = 1
 
@@ -277,20 +280,24 @@ class BoxLayoutColor(BoxLayout_main):
         verticalBox1 = BoxLayout(orientation='horizontal', size_hint_y=0.1)
         verticalBox = BoxLayout(orientation='horizontal', size_hint_y=0.15)
 
-        button3 = Button(text="Sure Lens")
+        button3 = Button(text="Sure Lens", background_color=(0.4, 1, 0, 1))
 
-        button4 = Button(text="Maybe Lens")
+        button4 = Button(text="Maybe Lens", background_color=(0.4, 1, 0, 1))
 
-        button5 = Button(text="Non Lens")
+        button5 = Button(text="Non Lens", background_color=(0.4, 1, 0, 1))
         button6 = Button(text="Merger")
         button7 = Button(text="Spiral")
         button8 = Button(text="Ring")
-        button3.bind(on_press=partial(self.classify, 'L'))
-        button4.bind(on_press=partial(self.classify, 'ML'))
-        button5.bind(on_press=partial(self.classify, 'NL'))
-        button6.bind(on_press=partial(self.classify, 'Merger'))
-        button7.bind(on_press=partial(self.classify, 'Spiral'))
-        button8.bind(on_press=partial(self.classify, 'Ring'))
+        button9 = Button(text="Elliptical")
+        button10 = Button(text="Disk")
+        button3.bind(on_press=partial(self.classify, 'L', 1))
+        button4.bind(on_press=partial(self.classify, 'ML', 1))
+        button5.bind(on_press=partial(self.classify, 'NL', 1))
+        button6.bind(on_press=partial(self.classify, 'Merger', 2))
+        button7.bind(on_press=partial(self.classify, 'Spiral', 2))
+        button8.bind(on_press=partial(self.classify, 'Ring', 2))
+        button9.bind(on_press=partial(self.classify, 'Elliptical', 2))
+        button10.bind(on_press=partial(self.classify, 'Disk', 2))
 
         buttonscale1 = Button(text="Linear")
         buttonscale2 = Button(text="Sqrt")
@@ -310,10 +317,14 @@ class BoxLayoutColor(BoxLayout_main):
         tnumber = Label(text=str(' / ' + str(self.COUNTER_MAX-1)), font_size=25, size_hint_x=0.1)
         buttonds9 = Button(text="ds9", font_size=25, size_hint_x=0.1)
         buttonds9.bind(on_press=self.open_ds9)
+        self.tclass = Label(text=self.classification[self.counter], font_size=25, size_hint_x=0.1)
+        self.tsubclass = Label(text=self.subclassification[self.counter], font_size=25, size_hint_x=0.1)
 
         horizontalBoxup.add_widget(LSbutton)
         horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
+        horizontalBoxup.add_widget(self.tclass)
+        horizontalBoxup.add_widget(self.tsubclass)
         horizontalBoxup.add_widget(self.textnumber)
         horizontalBoxup.add_widget(tnumber)
 
@@ -324,6 +335,8 @@ class BoxLayoutColor(BoxLayout_main):
         verticalBox.add_widget(button6)
         verticalBox.add_widget(button7)
         verticalBox.add_widget(button8)
+        verticalBox.add_widget(button9)
+        verticalBox.add_widget(button10)
 
         bforward = Button(text=" --> ")
         bbackward = Button(text=" <-- ")
