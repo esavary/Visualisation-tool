@@ -34,10 +34,11 @@ from kivy.core.window import Window
 # Boxlayout is the App class
 class SaveDialog(Popup):
 
-    def __init__(self,listnames,classification,**kwargs):
+    def __init__(self,listnames,classification,subclassification,**kwargs):
         super(SaveDialog,self).__init__(**kwargs)
         self.listnames=listnames
         self.classification=classification
+        self.subclassification = subclassification
 
         self.content = BoxLayout(orientation="horizontal")
         self.name_input = TextInput(text='name')
@@ -58,7 +59,7 @@ class SaveDialog(Popup):
     def save(self,*args):
         print( "save ",self.name_input.text)
         np.savetxt( './classifications/'+self.name_input.text+ '.csv',
-                   np.transpose(np.array([self.listnames,self.classification], dtype='U40')),
+                   np.transpose(np.array([self.listnames,self.classification,self.subclassification], dtype='U40')),
                    delimiter=",", fmt='%s')
         self.dismiss()
 
@@ -82,8 +83,8 @@ class CustomSlider(Slider):
 
 class BoxLayout_main(App):
 
-
     def _keyboard_closed(self):
+        print('My keyboard have been closed!')
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 
@@ -163,16 +164,21 @@ class BoxLayout_main(App):
             image[indices] = 1.0
         elif scale_state == 'log':
             print ('factor',self.scale_min)
-            factor = math.log10(self.scale_max - self.scale_min)
-            indices0 = np.where(image < self.scale_min)
-            indices1 = np.where((image >= self.scale_min) & (image <= self.scale_max))
-            indices2 = np.where(image > self.scale_max)
-            image[indices0] = 0.0
-            image[indices2] = 1.0
             try:
+                factor = math.log10(self.scale_max - self.scale_min)
+
+
+                indices0 = np.where(image < self.scale_min)
+                indices1 = np.where((image >= self.scale_min) & (image <= self.scale_max))
+                indices2 = np.where(image > self.scale_max)
+                image[indices0] = 0.0
+                image[indices2] = 1.0
+
                 image[indices1] = np.log10(image[indices1]) / (factor * 1.0)
-            except:
-                print ("Error on math.log10 ")
+            except ValueError:
+                popup = Popup(title='Error ', content=Label(text='Log of negative number'), size_hint=(None, None),
+                              size=(400, 100))
+                popup.open()
         elif scale_state=='sqrt':
             image = image.clip(min=self.scale_min, max=self.scale_max)
             image = image - self.scale_min
@@ -219,6 +225,8 @@ class BoxLayout_main(App):
         self.textnumber.text = str(self.counter)
         self.draw_plot(self.scale_state)
         self.oo.draw_idle()
+        self.tclass.text=self.classification[self.counter]
+        self.tsubclass.text = self.subclassification[self.counter]
 
 
         self.slider1.set_step(float(self.step))
@@ -234,7 +242,7 @@ class BoxLayout_main(App):
 
 
     def save_csv(self,event):
-        popup = SaveDialog(self.listnames,self.classification,title=' ', content=Label(text='POPUP'), size_hint=(None, None),
+        popup = SaveDialog(self.listnames,self.classification,self.subclassification,title=' ', content=Label(text='POPUP'), size_hint=(None, None),
                       size=(400, 100))
         popup.open()
 
@@ -299,10 +307,13 @@ class BoxLayout_main(App):
         name = self.listimage[self.counter]
         self.open_image_in_ds9(self.pathds9, self.pathtofile, name)
 
-    def classify(self,grade,event):
-        self.classification[self.counter] = str(grade)
-        print(self.classification)
-        self.forward(event)
+    def classify(self,grade,col,event):
+        if col==1:
+            self.classification[self.counter] = str(grade)
+            print(self.classification)
+            self.forward(event)
+        elif col==2:
+            self.subclassification[self.counter] = str(grade)
 
     def get_legacy_survey(self,event):
         s_path = './csv_catalog/'
@@ -332,6 +343,7 @@ class BoxLayout_main(App):
         self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
 
+
         self.pathtofile = './files_to_visualize/'
 
         self.listimage = sorted(os.listdir('./files_to_visualize/'))
@@ -342,6 +354,7 @@ class BoxLayout_main(App):
 
         self.listnames = ['None'] * len(self.listimage)
         self.classification = ['None'] * len(self.listimage)
+        self.subclassification = ['None'] * len(self.listimage)
         self.scale_min = 0
         self.scale_max = 1
         self.limit_max=1
@@ -354,6 +367,7 @@ class BoxLayout_main(App):
         self._keyboard = Window.request_keyboard(self,self._keyboard_closed)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         '''
+
 
 
         self.oo = FigureCanvasKivyAgg(plt.gcf(),size_hint_x=0.8)
@@ -378,22 +392,26 @@ class BoxLayout_main(App):
         verticalBox1 = BoxLayout(orientation='horizontal',size_hint_y=0.1)
         verticalBox = BoxLayout(orientation='horizontal', size_hint_y=0.15)
 
-        button3 = Button(text="Sure Lens")
+        button3 = Button(text="Sure Lens",background_color=( 0.4,1,0,1))
 
 
 
-        button4 = Button(text="Maybe Lens")
+        button4 = Button(text="Maybe Lens",background_color=( 0.4,1,0,1))
 
-        button5 = Button(text="Non Lens")
+        button5 = Button(text="Non Lens",background_color=( 0.4,1,0,1))
         button6 = Button(text="Merger")
         button7 = Button(text="Spiral")
         button8 = Button(text="Ring")
-        button3.bind(on_press=partial(self.classify, 'L'))
-        button4.bind(on_press=partial(self.classify, 'ML'))
-        button5.bind(on_press=partial(self.classify, 'NL'))
-        button6.bind(on_press=partial(self.classify, 'Merger'))
-        button7.bind(on_press=partial(self.classify, 'Spiral'))
-        button8.bind(on_press=partial(self.classify, 'Ring'))
+        button9 = Button(text="Elliptical")
+        button10 = Button(text="Disk")
+        button3.bind(on_press=partial(self.classify, 'L',1))
+        button4.bind(on_press=partial(self.classify, 'ML',1))
+        button5.bind(on_press=partial(self.classify, 'NL',1))
+        button6.bind(on_press=partial(self.classify, 'Merger',2))
+        button7.bind(on_press=partial(self.classify, 'Spiral',2))
+        button8.bind(on_press=partial(self.classify, 'Ring',2))
+        button9.bind(on_press=partial(self.classify, 'Elliptical',2))
+        button10.bind(on_press=partial(self.classify, 'Disk',2))
 
         buttonscale1= Button(text="Linear")
         buttonscale2 = Button(text="Sqrt")
@@ -405,12 +423,14 @@ class BoxLayout_main(App):
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
 
 
-        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.6)
+        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.4)
         savebutton.bind(on_press=self.save_csv)
         LSbutton = Button(text="LS", font_size=25, size_hint_x=0.1)
         LSbutton.bind(on_press=self.get_legacy_survey)
         self.textnumber = TextInput(text=str(self.counter), multiline=False,font_size=25, size_hint_x=0.1)
         self.textnumber.bind(on_text_validate=self.change_number)
+        self.tclass = Label(text=self.classification[self.counter], font_size=25, size_hint_x=0.1)
+        self.tsubclass = Label(text=self.subclassification[self.counter], font_size=25, size_hint_x=0.1)
         tnumber=Label(text=str(' / '+str(self.COUNTER_MAX-1)),font_size=25, size_hint_x=0.1)
         buttonds9 = Button(text="ds9",font_size=25, size_hint_x=0.1)
         buttonds9.bind(on_press=self.open_ds9)
@@ -418,6 +438,8 @@ class BoxLayout_main(App):
         horizontalBoxup.add_widget(LSbutton)
         horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
+        horizontalBoxup.add_widget(self.tclass)
+        horizontalBoxup.add_widget(self.tsubclass)
         horizontalBoxup.add_widget(self.textnumber)
         horizontalBoxup.add_widget(tnumber)
 
@@ -428,6 +450,8 @@ class BoxLayout_main(App):
         verticalBox.add_widget(button6)
         verticalBox.add_widget(button7)
         verticalBox.add_widget(button8)
+        verticalBox.add_widget(button9)
+        verticalBox.add_widget(button10)
 
         bforward=Button(text=" --> ")
         bbackward = Button(text=" <-- ")
