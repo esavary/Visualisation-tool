@@ -231,50 +231,24 @@ class BoxLayoutColor(BoxLayout_main):
         except ValueError:
             print('not a color image')
 
-    def obtain_df(self):
-        class_file = glob.glob('./classifications/classification.csv')
-        if len(class_file) == 0:
-            print('creating classification.csv')
-            dfc =['file_name', 'classification', 'subclassification']
-            df = pd.DataFrame(columns=dfc)
-            df['file_name'] = self.listnames
-            df['classification'] = self.classification
-            df['subclassification'] = self.subclassification
-        else:
-            print('reading classification.csv')
-            df = pd.read_csv(class_file[0])
-        return df
-  
-    def update_df(self):
-        df=self.df
-        cnt = self.counter - 1
-        df['file_name'].iloc[cnt] = self.listimage[cnt]
-        df['classification'].iloc[cnt] = self.classification[cnt]
-        df['subclassification'].iloc[cnt] = self.subclassification[cnt]
-        print('updating csv file')
-        df.to_csv('./classifications/classification.csv',index=False)
-
-
     def build(self):
         # Please enter the path of ds9 executable here:
-        self.pathds9 = '/usr/local/bin/ds9'#'C:\\SAOImageDS9\\ds9.exe'
+        self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
         self.pathtofile = './files_to_visualize/'
 
         self.listimage = sorted(os.listdir('./files_to_visualize/'))
-        #print(len(self.listimage))
         self.counter = 0
         self.number_graded = 0
         self.COUNTER_MIN = 0
         self.COUNTER_MAX = len(self.listimage)
 
-        self.listnames = ['None'] * len(self.listimage)
+
         self.classification = ['None'] * len(self.listimage)
         self.subclassification = ['None'] * len(self.listimage)
-        self.df = self.obtain_df()
         self.scale_min = 0
         self.scale_max = 1
-       
+
         self.scale_min_r=0
         self.scale_min_g = 0
         self.scale_min_b = 0
@@ -290,6 +264,7 @@ class BoxLayoutColor(BoxLayout_main):
         self.scale_state = 'asinh'
         self.diplaystate = 0
 
+        self.df = self.obtain_df()
         self.oo = FigureCanvasKivyAgg(plt.gcf())
         superBox = BoxLayout(orientation='vertical')
 
@@ -347,7 +322,6 @@ class BoxLayoutColor(BoxLayout_main):
         self.tclass = Label(text=self.classification[self.counter], font_size=25, size_hint_x=0.1)
         self.tsubclass = Label(text=self.subclassification[self.counter], font_size=25, size_hint_x=0.1)
 
-        
         horizontalBoxup.add_widget(LSbutton)
         horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
@@ -382,7 +356,6 @@ class BoxLayoutColor(BoxLayout_main):
 
         superBox.add_widget(verticalBox1)
         superBox.add_widget(verticalBox)
-
         '''
         self._keyboard = Window.request_keyboard(self, self._keyboard_closed)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
@@ -392,4 +365,3 @@ class BoxLayoutColor(BoxLayout_main):
 
 if __name__ == '__main__':
     BoxLayoutColor().run()
-
