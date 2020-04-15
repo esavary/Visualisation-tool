@@ -242,7 +242,7 @@ class BoxLayout_main(App):
 
 
     def save_csv(self,event):
-        popup = SaveDialog(self.listnames,self.classification,self.subclassification,title=' ', content=Label(text='POPUP'), size_hint=(None, None),
+        popup = SaveDialog(self.listimage,self.classification,self.subclassification,title=' ', content=Label(text='POPUP'), size_hint=(None, None),
                       size=(400, 100))
         popup.open()
 
@@ -352,7 +352,7 @@ class BoxLayout_main(App):
         self.COUNTER_MIN =0
         self.COUNTER_MAX = len(self.listimage)
 
-        self.listnames = ['None'] * len(self.listimage)
+        #self.listnames = self.listimage
         self.classification = ['None'] * len(self.listimage)
         self.subclassification = ['None'] * len(self.listimage)
         self.scale_min = 0
