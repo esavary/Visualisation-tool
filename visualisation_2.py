@@ -1,4 +1,3 @@
-
 # imports
 import matplotlib
 matplotlib.use("Agg")
@@ -222,6 +221,7 @@ class BoxLayout_main(App):
     def update(self,event):
         self.diplaystate = 0
         plt.clf()
+        self.update_df()
         self.textnumber.text = str(self.counter)
         self.draw_plot(self.scale_state)
         self.oo.draw_idle()
@@ -336,13 +336,34 @@ class BoxLayout_main(App):
                           size=(600, 200))
             popup.open()
 
+    def obtain_df(self):
+        class_file = glob.glob('./classifications/classification.csv')
+        if len(class_file) == 0:
+            print('creating classification.csv')
+            dfc = ['file_name', 'classification', 'subclassification']
+            df = pd.DataFrame(columns=dfc)
+            df['file_name'] = self.listimage
+            df['classification'] = self.classification
+            df['subclassification'] = self.subclassification
+        else:
+            print('reading classification.csv')
+            df = pd.read_csv(class_file[0])
+        return df
 
+    def update_df(self):
+        df = self.df
+        cnt = self.counter - 1
+        df['file_name'].iloc[cnt] = self.listimage[cnt]
+        df['classification'].iloc[cnt] = self.classification[cnt]
+        df['subclassification'].iloc[cnt] = self.subclassification[cnt]
+        print('updating csv file')
+        df.to_csv('./classifications/classification.csv', index=False)
 
     def build(self):
         # Please enter the path of ds9 executable here:
         self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
-
+        self.df = self.obtain_df()
 
         self.pathtofile = './files_to_visualize/'
 
