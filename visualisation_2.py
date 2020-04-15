@@ -325,11 +325,11 @@ class BoxLayout_main(App):
             savedir = './legacy_survey/'
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8&pixscale=0.06'
-            savename = str(ra) + '_' + str(dec) + 'dr8.jpg'
+            savename = 'N' + str(self.counter) + '_' + str(round(float(ra),6)) + '_' + str(round(float(dec),6)) + '_dr8.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8-resid&pixscale=0.06'
-            savename = str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
+            savename = 'N' + str(self.counter) + '_' + str(round(float(ra),6)) + '_' + str(round(float(dec),6)) + '_dr8-resid.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
         if len(sam) == 0:
             popup = Popup(title='Error', content=Label(text='Provide a csv file with ra,dec keywords for all the files in the folder'), size_hint=(None, None),
