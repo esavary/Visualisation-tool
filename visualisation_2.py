@@ -337,27 +337,33 @@ class BoxLayout_main(App):
             popup.open()
 
     def obtain_df(self):
-        class_file = glob.glob('./classifications/classification.csv')
-        if len(class_file) == 0:
-            print('creating classification.csv')
+        class_file = np.sort(glob.glob('./classifications/classification*.csv'))
+        print(class_file)
+        if len(class_file) > 1:
+            print('reading '+str(class_file[len(class_file)-1]))
+            df = pd.read_csv(class_file[len(class_file)-1])
+            self.nf = len(class_file) 
+        else:
+            df=[]
+        if len(df) != len(self.listimage):
+            print('creating classification'+str(len(class_file)+1)+'.csv')
             dfc = ['file_name', 'classification', 'subclassification']
             df = pd.DataFrame(columns=dfc)
             df['file_name'] = self.listimage
             df['classification'] = self.classification
             df['subclassification'] = self.subclassification
-        else:
-            print('reading classification.csv')
-            df = pd.read_csv(class_file[0])
+            self.nf = len(class_file) +1
         return df
 
     def update_df(self):
+        print(self.nf)
         df = self.df
         cnt = self.counter - 1
         df['file_name'].iloc[cnt] = self.listimage[cnt]
         df['classification'].iloc[cnt] = self.classification[cnt]
         df['subclassification'].iloc[cnt] = self.subclassification[cnt]
-        print('updating csv file')
-        df.to_csv('./classifications/classification.csv', index=False)
+        print('updating '+'classification'+str(self.nf)+'.csv file')
+        df.to_csv('./classifications/classification'+str(self.nf)+'.csv', index=False)
 
     def build(self):
         # Please enter the path of ds9 executable here:
