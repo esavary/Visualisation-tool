@@ -364,7 +364,7 @@ class BoxLayout_main(App):
         # Please enter the path of ds9 executable here:
         self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
-        self.df = self.obtain_df()
+        
 
         self.pathtofile = './files_to_visualize/'
 
@@ -385,6 +385,7 @@ class BoxLayout_main(App):
 
         self.scale_state = 'asinh'
         self.diplaystate=0
+        self.df = self.obtain_df()
         '''
         self._keyboard = Window.request_keyboard(self,self._keyboard_closed)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
