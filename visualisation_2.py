@@ -338,7 +338,6 @@ class BoxLayout_main(App):
 
     def obtain_df(self):
         class_file = np.sort(glob.glob('./classifications/classification*.csv'))
-        print(class_file)
         if len(class_file) > 1:
             print('reading '+str(class_file[len(class_file)-1]))
             df = pd.read_csv(class_file[len(class_file)-1])
@@ -356,7 +355,6 @@ class BoxLayout_main(App):
         return df
 
     def update_df(self):
-        print(self.nf)
         df = self.df
         cnt = self.counter - 1
         df['file_name'].iloc[cnt] = self.listimage[cnt]
