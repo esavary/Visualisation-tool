@@ -81,7 +81,7 @@ class BoxLayoutColor(BoxLayout_main):
 
 
 
-            image_B, image_G, image_R = [pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data,
+            image_R, image_G, image_B = [pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data,
                                          pyfits.open(self.pathtofile + self.listimage[self.counter])[1].data,
                                          pyfits.open(self.pathtofile + self.listimage[self.counter])[2].data]
 
