@@ -30,7 +30,6 @@ from kivy.core.window import Window
 
 
 
-
 # Boxlayout is the App class
 class SaveDialog(Popup):
 
@@ -227,6 +226,7 @@ class BoxLayout_main(App):
         self.draw_plot(self.scale_state)
         self.oo.draw_idle()
         self.tclass.text=self.classification[self.counter]
+        self.tname.text = self.listimage[self.counter]
         self.tsubclass.text = self.subclassification[self.counter]
 
 
@@ -326,11 +326,11 @@ class BoxLayout_main(App):
             savedir = './legacy_survey/'
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8&pixscale=0.06'
-            savename = 'N' + str(self.counter) + '_' + str(round(float(ra),6)) + '_' + str(round(float(dec),6)) + '_dr8.jpg'
+            savename = str(ra) + '_' + str(dec) + 'dr8.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8-resid&pixscale=0.06'
-            savename = 'N' + str(self.counter) + '_' + str(round(float(ra),6)) + '_' + str(round(float(dec),6)) + '_dr8-resid.jpg'
+            savename = str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
         if len(sam) == 0:
             popup = Popup(title='Error', content=Label(text='Provide a csv file with ra,dec keywords for all the files in the folder'), size_hint=(None, None),
@@ -338,21 +338,17 @@ class BoxLayout_main(App):
             popup.open()
 
     def obtain_df(self):
-        class_file = np.sort(glob.glob('./classifications/classification*.csv'))
-        if len(class_file) > 1:
-            print('reading '+str(class_file[len(class_file)-1]))
-            df = pd.read_csv(class_file[len(class_file)-1])
-            self.nf = len(class_file) 
-        else:
-            df=[]
-        if len(df) != len(self.listimage):
-            print('creating classification'+str(len(class_file)+1)+'.csv')
+        class_file = glob.glob('./classifications/classification.csv')
+        if len(class_file) == 0:
+            print('creating classification.csv')
             dfc = ['file_name', 'classification', 'subclassification']
             df = pd.DataFrame(columns=dfc)
             df['file_name'] = self.listimage
             df['classification'] = self.classification
             df['subclassification'] = self.subclassification
-            self.nf = len(class_file) +1
+        else:
+            print('reading classification.csv')
+            df = pd.read_csv(class_file[0])
         return df
 
     def update_df(self):
@@ -361,14 +357,14 @@ class BoxLayout_main(App):
         df['file_name'].iloc[cnt] = self.listimage[cnt]
         df['classification'].iloc[cnt] = self.classification[cnt]
         df['subclassification'].iloc[cnt] = self.subclassification[cnt]
-        print('updating '+'classification'+str(self.nf)+'.csv file')
-        df.to_csv('./classifications/classification'+str(self.nf)+'.csv', index=False)
+        print('updating csv file')
+        df.to_csv('./classifications/classification.csv', index=False)
 
     def build(self):
         # Please enter the path of ds9 executable here:
         self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
-        
+
 
         self.pathtofile = './files_to_visualize/'
 
@@ -401,6 +397,7 @@ class BoxLayout_main(App):
         superBox = BoxLayout(orientation='vertical')
 
         horizontalBoxup = BoxLayout(orientation='horizontal',size_hint_y=0.1)
+        self.tname = Label(text=self.listimage[self.counter], font_size=20, size_hint_y=0.1)
 
         horizontalBox = BoxLayout(orientation='horizontal')
 
@@ -497,6 +494,7 @@ class BoxLayout_main(App):
 
         superBox.add_widget(verticalBox1)
         superBox.add_widget(verticalBox)
+        superBox.add_widget(self.tname)
 
         return superBox
 
