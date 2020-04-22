@@ -229,8 +229,10 @@ class BoxLayoutColor(BoxLayout_main):
             wspace=0.0)
 
 
-        except ValueError:
-            print('not a color image')
+        except IndexError:
+            popup = Popup(title=' ', content=Label(text='Incorrect format for color image'), size_hint=(None, None),
+                          size=(400, 100))
+            popup.open()
 
     def build(self):
         # Please enter the path of ds9 executable here:
