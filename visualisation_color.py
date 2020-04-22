@@ -71,6 +71,7 @@ class BoxLayoutColor(BoxLayout_main):
         self.oo.draw_idle()
         self.tclass.text = self.classification[self.counter]
         self.tsubclass.text = self.subclassification[self.counter]
+        self.tname.text = self.listimage[self.counter]
         self.update_df()
 
 
@@ -271,6 +272,7 @@ class BoxLayoutColor(BoxLayout_main):
         horizontalBoxup = BoxLayout(orientation='horizontal', size_hint_y=0.1)
 
         horizontalBox = BoxLayout(orientation='horizontal')
+        self.tname = Label(text=self.listimage[self.counter], font_size=20, size_hint_y=0.1)
 
         # button1 = Button(text="One",size_hint_x=0.1)
 
@@ -356,6 +358,7 @@ class BoxLayoutColor(BoxLayout_main):
 
         superBox.add_widget(verticalBox1)
         superBox.add_widget(verticalBox)
+        superBox.add_widget(self.tname)
         '''
         self._keyboard = Window.request_keyboard(self, self._keyboard_closed)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
