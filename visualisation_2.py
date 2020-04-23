@@ -25,6 +25,36 @@ from functools import partial
 from kivy.core.window import Window
 
 
+class CommentDialog(Popup):
+
+    def __init__(self,originalBoxLayout):
+        super(CommentDialog,self).__init__()
+        self.originalBox=originalBoxLayout
+        self.content = BoxLayout(orientation="horizontal")
+        self.content1 = BoxLayout(orientation="vertical",size_hint_x=0.2)
+        self.content2 = BoxLayout(orientation="vertical",size_hint_x=0.8)
+        self.name_input = TextInput(text='Type your comment here. Please do not use line break')
+
+        self.save_button = Button(text='Add')
+        self.save_button.bind(on_press=self.enterComment)
+
+        self.cancel_button = Button(text='Cancel')
+        self.cancel_button.bind(on_press=self.cancel)
+
+        self.content1.add_widget(self.save_button)
+        self.content2.add_widget(self.name_input)
+        self.content1.add_widget(self.cancel_button)
+        self.content.add_widget(self.content1)
+        self.content.add_widget(self.content2)
+
+    def cancel(self, *args):
+        print ("cancel")
+        self.dismiss()
+    def enterComment(self, *args):
+        self.originalBox.comment[self.originalBox.counter]= self.name_input.text
+        print(self.originalBox.comment[self.originalBox.counter])
+        self.dismiss()
+
 
 
 
@@ -33,10 +63,11 @@ from kivy.core.window import Window
 # Boxlayout is the App class
 class SaveDialog(Popup):
 
-    def __init__(self,listnames,classification,subclassification,**kwargs):
+    def __init__(self,listnames,classification,subclassification,comments,**kwargs):
         super(SaveDialog,self).__init__(**kwargs)
         self.listnames=listnames
         self.classification=classification
+        self.comment=comments
         self.subclassification = subclassification
 
         self.content = BoxLayout(orientation="horizontal")
@@ -55,10 +86,12 @@ class SaveDialog(Popup):
 
 
 
+
+
     def save(self,*args):
         print( "save ",self.name_input.text)
         np.savetxt( './classifications/'+self.name_input.text+ '.csv',
-                   np.transpose(np.array([self.listnames,self.classification,self.subclassification], dtype='U40')),
+                   np.transpose(np.array([self.listnames,self.classification,self.subclassification,self.comment], dtype='U40')),
                    delimiter=",", fmt='%s')
         self.dismiss()
 
@@ -242,10 +275,13 @@ class BoxLayout_main(App):
 
 
     def save_csv(self,event):
-        popup = SaveDialog(self.listimage,self.classification,self.subclassification,title=' ', content=Label(text='POPUP'), size_hint=(None, None),
+        popup = SaveDialog(self.listimage,self.classification,self.subclassification,self.comment,title=' ', content=Label(text='POPUP'), size_hint=(None, None),
                       size=(400, 100))
         popup.open()
 
+    def add_comment(self, event):
+        popup = CommentDialog(self)
+        popup.open()
 
     def change_scale(self,scale_state,event,):
 
@@ -377,6 +413,7 @@ class BoxLayout_main(App):
         #self.listnames = self.listimage
         self.classification = ['None'] * len(self.listimage)
         self.subclassification = ['None'] * len(self.listimage)
+        self.comment = [' '] * len(self.listimage)
         self.scale_min = 0
         self.scale_max = 1
         self.limit_max=1
@@ -447,8 +484,10 @@ class BoxLayout_main(App):
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
 
 
-        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.4)
+        savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.3)
         savebutton.bind(on_press=self.save_csv)
+        commentbutton = Button(text="Comment", background_color=(0, 1, 0.4, 1), font_size=25, size_hint_x=0.3)
+        commentbutton.bind(on_press=self.add_comment)
         LSbutton = Button(text="LS", font_size=25, size_hint_x=0.1)
         LSbutton.bind(on_press=self.get_legacy_survey)
         self.textnumber = TextInput(text=str(self.counter), multiline=False,font_size=25, size_hint_x=0.1)
@@ -462,6 +501,7 @@ class BoxLayout_main(App):
         horizontalBoxup.add_widget(LSbutton)
         horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
+        horizontalBoxup.add_widget(commentbutton)
         horizontalBoxup.add_widget(self.tclass)
         horizontalBoxup.add_widget(self.tsubclass)
         horizontalBoxup.add_widget(self.textnumber)

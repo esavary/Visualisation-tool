@@ -252,6 +252,7 @@ class BoxLayoutColor(BoxLayout_main):
 
         self.classification = ['None'] * len(self.listimage)
         self.subclassification = ['None'] * len(self.listimage)
+        self.comment = [' '] * len(self.listimage)
         self.scale_min = 0
         self.scale_max = 1
 
@@ -319,11 +320,13 @@ class BoxLayoutColor(BoxLayout_main):
 
         LSbutton = Button(text="LS", font_size=25, size_hint_x=0.1)
         LSbutton.bind(on_press=self.get_legacy_survey)
-        savebutton = Button(text="Save csv", background_color=(0, 1, 0.4, 1), font_size=25, size_hint_x=0.7)
+        savebutton = Button(text="Save csv", background_color=(0, 1, 0.4, 1), font_size=25, size_hint_x=0.4 )
         savebutton.bind(on_press=self.save_csv)
+        commentbutton = Button(text="Comment", background_color=(0, 1, 0.4, 1), font_size=25, size_hint_x=0.3)
+        commentbutton.bind(on_press=self.add_comment)
         self.textnumber = TextInput(text=str(self.counter), multiline=False, font_size=25, size_hint_x=0.1)
         self.textnumber.bind(on_text_validate=self.change_number)
-        tnumber = Label(text=str(' / ' + str(self.COUNTER_MAX-1)), font_size=25, size_hint_x=0.1)
+        tnumber = Label(text=str(' ' + str(self.COUNTER_MAX-1)), font_size=25, size_hint_x=0.1)
         buttonds9 = Button(text="ds9", font_size=25, size_hint_x=0.1)
         buttonds9.bind(on_press=self.open_ds9)
         self.tclass = Label(text=self.classification[self.counter], font_size=25, size_hint_x=0.1)
@@ -332,6 +335,7 @@ class BoxLayoutColor(BoxLayout_main):
         horizontalBoxup.add_widget(LSbutton)
         horizontalBoxup.add_widget(buttonds9)
         horizontalBoxup.add_widget(savebutton)
+        horizontalBoxup.add_widget(commentbutton)
         horizontalBoxup.add_widget(self.tclass)
         horizontalBoxup.add_widget(self.tsubclass)
         horizontalBoxup.add_widget(self.textnumber)
