@@ -81,7 +81,7 @@ class BoxLayoutColor(BoxLayout_main):
 
 
 
-            image_R, image_G, image_B = [pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data,
+            image_B, image_G, image_R = [pyfits.open(self.pathtofile + self.listimage[self.counter])[0].data,
                                          pyfits.open(self.pathtofile + self.listimage[self.counter])[1].data,
                                          pyfits.open(self.pathtofile + self.listimage[self.counter])[2].data]
 
@@ -205,7 +205,7 @@ class BoxLayoutColor(BoxLayout_main):
 
             plt.style.use('dark_background')
             plt.subplot(2, 2, 1)
-            plt.imshow(image_R)
+            plt.imshow(image_B)
             plt.subplot(2, 2, 1).text(5, 5, 'G', fontsize=18, ha='center', va='center')
             plt.style.use('dark_background')
             plt.axis('off')
@@ -218,7 +218,7 @@ class BoxLayoutColor(BoxLayout_main):
 
 
             plt.subplot(2, 2, 3)
-            plt.imshow(image_B)
+            plt.imshow(image_R)
             plt.subplot(2, 2, 3).text(5, 5, 'I', fontsize=18, ha='center', va='center')
             plt.style.use('dark_background')
             plt.axis('off')
