@@ -377,17 +377,22 @@ class BoxLayout_main(App):
             popup.open()
 
     def obtain_df(self):
-        class_file = glob.glob('./classifications/classification.csv')
-        if len(class_file) == 0:
-            print('creating classification.csv')
+        class_file = np.sort(glob.glob('./classifications/classification*.csv'))
+        
+        if len(class_file) > 1:
+            print('reading '+str(class_file[len(class_file)-1]))
+            df = pd.read_csv(class_file[len(class_file)-1])
+            self.nf = len(class_file)
+        else:
+            df=[]
+        if len(df) != len(self.listimage):
+            print('creating classification'+str(len(class_file)+1)+'.csv')
             dfc = ['file_name', 'classification', 'subclassification']
             df = pd.DataFrame(columns=dfc)
             df['file_name'] = self.listimage
             df['classification'] = self.classification
             df['subclassification'] = self.subclassification
-        else:
-            print('reading classification.csv')
-            df = pd.read_csv(class_file[0])
+            self.nf = len(class_file) +1
         return df
 
     def update_df(self):
