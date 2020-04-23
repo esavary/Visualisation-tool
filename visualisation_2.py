@@ -221,7 +221,6 @@ class BoxLayout_main(App):
     def update(self,event):
         self.diplaystate = 0
         plt.clf()
-        self.update_df()
         self.textnumber.text = str(self.counter)
         self.draw_plot(self.scale_state)
         self.oo.draw_idle()
@@ -311,10 +310,11 @@ class BoxLayout_main(App):
     def classify(self,grade,col,event):
         if col==1:
             self.classification[self.counter] = str(grade)
-            print(self.classification)
+            self.update_df()
             self.forward(event)
         elif col==2:
             self.subclassification[self.counter] = str(grade)
+            self.update_df()
 
     def get_legacy_survey(self,event):
         s_path = './csv_catalog/'
