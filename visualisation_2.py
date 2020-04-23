@@ -64,13 +64,14 @@ class CommentDialog(Popup):
 class SaveDialog(Popup):
 
     def __init__(self,listnames,classification,subclassification,comments,**kwargs):
-        super(SaveDialog,self).__init__(**kwargs)
+        super(SaveDialog,self).__init__()
         self.listnames=listnames
         self.classification=classification
         self.comment=comments
         self.subclassification = subclassification
-
-        self.content = BoxLayout(orientation="horizontal")
+        self.content = BoxLayout(orientation="vertical")
+        self.content1 = BoxLayout(orientation="horizontal",size_hint_y=0.2)
+        self.content2 = BoxLayout(orientation="horizontal",size_hint_y=0.8)
         self.name_input = TextInput(text='name')
 
         self.save_button = Button(text='Save')
@@ -79,9 +80,11 @@ class SaveDialog(Popup):
         self.cancel_button = Button(text='Cancel')
         self.cancel_button.bind(on_press=self.cancel)
 
-        self.content.add_widget(self.save_button)
-        self.content.add_widget(self.name_input)
-        self.content.add_widget(self.cancel_button)
+        self.content1.add_widget(self.save_button)
+        self.content2.add_widget(self.name_input)
+        self.content1.add_widget(self.cancel_button)
+        self.content.add_widget(self.content1)
+        self.content.add_widget(self.content2)
 
 
 
