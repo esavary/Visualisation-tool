@@ -206,17 +206,20 @@ class BoxLayoutColor(BoxLayout_main):
             plt.style.use('dark_background')
             plt.subplot(2, 2, 1)
             plt.imshow(image_R)
+            plt.subplot(2, 2, 1).text(5, 5, 'G', fontsize=18, ha='center', va='center')
             plt.style.use('dark_background')
             plt.axis('off')
 
             plt.subplot(2, 2, 2)
             plt.imshow(image_G)
+            plt.subplot(2, 2, 2).text(5, 5, 'R', fontsize=18, ha='center', va='center')
             plt.style.use('dark_background')
             plt.axis('off')
 
 
             plt.subplot(2, 2, 3)
             plt.imshow(image_B)
+            plt.subplot(2, 2, 3).text(5, 5, 'I', fontsize=18, ha='center', va='center')
             plt.style.use('dark_background')
             plt.axis('off')
 
