@@ -403,8 +403,8 @@ class BoxLayout_main(App):
         df['classification'].iloc[cnt] = self.classification[cnt]
         df['subclassification'].iloc[cnt] = self.subclassification[cnt]
         df['comment'].iloc[cnt] = self.comment[cnt]
-        print('updating csv file')
-        df.to_csv('./classifications/classification.csv', index=False)
+        print('updating '+'classification'+str(self.nf)+'.csv file')
+        df.to_csv('./classifications/classification'+str(self.nf)+'.csv', index=False)
 
     def build(self):
         # Please enter the path of ds9 executable here:
