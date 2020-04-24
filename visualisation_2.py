@@ -378,7 +378,7 @@ class BoxLayout_main(App):
 
     def obtain_df(self):
         class_file = np.sort(glob.glob('./classifications/classification*.csv'))
-        
+
         if len(class_file) > 1:
             print('reading '+str(class_file[len(class_file)-1]))
             df = pd.read_csv(class_file[len(class_file)-1])
@@ -387,11 +387,12 @@ class BoxLayout_main(App):
             df=[]
         if len(df) != len(self.listimage):
             print('creating classification'+str(len(class_file)+1)+'.csv')
-            dfc = ['file_name', 'classification', 'subclassification']
+            dfc = ['file_name', 'classification', 'subclassification','comment']
             df = pd.DataFrame(columns=dfc)
             df['file_name'] = self.listimage
             df['classification'] = self.classification
             df['subclassification'] = self.subclassification
+            df['comment'] = self.comment
             self.nf = len(class_file) +1
         return df
 
@@ -401,6 +402,7 @@ class BoxLayout_main(App):
         df['file_name'].iloc[cnt] = self.listimage[cnt]
         df['classification'].iloc[cnt] = self.classification[cnt]
         df['subclassification'].iloc[cnt] = self.subclassification[cnt]
+        df['comment'].iloc[cnt] = self.comment[cnt]
         print('updating csv file')
         df.to_csv('./classifications/classification.csv', index=False)
 
