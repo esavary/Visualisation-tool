@@ -15,6 +15,7 @@ from kivy.app import App
 from kivy.properties import NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
+from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.uix.label import Label
@@ -54,6 +55,27 @@ class CommentDialog(Popup):
         self.originalBox.comment[self.originalBox.counter]= self.name_input.text
         print(self.originalBox.comment[self.originalBox.counter])
         self.dismiss()
+
+
+class LSDialog(Popup):
+
+    def __init__(self,ra,dec,savedir):
+        super(LSDialog,self).__init__()
+        self.content = BoxLayout(orientation="vertical")
+        self.content1 = BoxLayout(orientation="horizontal",size_hint_y=0.9)
+
+        self.img1 = Image(source=savedir+str(ra) + '_' + str(dec) + 'dr8.jpg')
+        self.img2 = Image(source=savedir+str(ra) + '_' + str(dec) + 'dr8-resid.jpg')
+        self.cancel_button = Button(text='Close',size_hint_y=0.1)
+        self.cancel_button.bind(on_press=self.cancel)
+        self.content1.add_widget(self.img1)
+        self.content1.add_widget(self.img2)
+        self.content.add_widget(self.content1)
+        self.content.add_widget(self.cancel_button)
+    def cancel(self,*args):
+        self.dismiss()
+
+
 
 
 
@@ -371,6 +393,8 @@ class BoxLayout_main(App):
                 dec) + '&layer=dr8-resid&pixscale=0.06'
             savename = str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
+            popup=LSDialog(ra,dec,savedir)
+            popup.open()
         if len(sam) == 0:
             popup = Popup(title='Error', content=Label(text='Provide a csv file with ra,dec keywords for all the files in the folder'), size_hint=(None, None),
                           size=(600, 200))
