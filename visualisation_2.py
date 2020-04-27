@@ -408,7 +408,7 @@ class BoxLayout_main(App):
         df['classification'].iloc[cnt] = self.classification[cnt]
         df['subclassification'].iloc[cnt] = self.subclassification[cnt]
         df['comment'].iloc[cnt] = self.comment[cnt]
-        print('updating '+'classification'+str(self.nf)+'.csv file')
+        print('updating '+'classification_autosave'+str(self.nf)+'.csv file')
         df.to_csv('./classifications/classification_autosave'+str(self.nf)+'.csv', index=False)
 
     def build(self):
