@@ -377,7 +377,7 @@ class BoxLayout_main(App):
             popup.open()
 
     def obtain_df(self):
-        class_file = np.sort(glob.glob('./classifications/classification*.csv'))
+        class_file = np.sort(glob.glob('./classifications/classification_autosave*.csv'))
         print (class_file, len(class_file))
         if len(class_file) >=1:
             print ('loop')
@@ -390,7 +390,7 @@ class BoxLayout_main(App):
         else:
             df=[]
         if len(df) != len(self.listimage):
-            print('creating classification'+str(len(class_file)+1)+'.csv')
+            print('creating classification_autosave'+str(len(class_file)+1)+'.csv')
             dfc = ['file_name', 'classification', 'subclassification','comment']
             self.nf = len(class_file) + 1
             df = pd.DataFrame(columns=dfc)
@@ -409,7 +409,7 @@ class BoxLayout_main(App):
         df['subclassification'].iloc[cnt] = self.subclassification[cnt]
         df['comment'].iloc[cnt] = self.comment[cnt]
         print('updating '+'classification'+str(self.nf)+'.csv file')
-        df.to_csv('./classifications/classification'+str(self.nf)+'.csv', index=False)
+        df.to_csv('./classifications/classification_autosave'+str(self.nf)+'.csv', index=False)
 
     def build(self):
         # Please enter the path of ds9 executable here:
