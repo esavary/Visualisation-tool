@@ -387,13 +387,13 @@ class BoxLayout_main(App):
             savedir = './legacy_survey/'
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8&pixscale=0.06'
-            savename = 'N' + str(self.counter) + str(ra) + '_' + str(dec) + 'dr8.jpg'
+            savename = 'N' + str(self.counter)+ '_' + + str(ra) + '_' + str(dec) + 'dr8.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8-resid&pixscale=0.06'
-            savename = 'N' + str(self.counter) + str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
+            savename = 'N' + str(self.counter)+ '_' + + str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
-            strpopup=savedir+'N' + str(self.counter)
+            strpopup=savedir+'N' + str(self.counter)+ '_'
             popup=LSDialog(ra,dec,strpopup)
             popup.open()
         if len(sam) == 0:
@@ -412,6 +412,11 @@ class BoxLayout_main(App):
             self.classification = df['classification'].tolist()
             self.subclassification = df['subclassification'].tolist()
             self.comment = df['comment'].tolist()
+
+            firstnone=self.classification.index('None')
+            self.counter =firstnone
+
+
         else:
             df=[]
         if len(df) != len(self.listimage):
