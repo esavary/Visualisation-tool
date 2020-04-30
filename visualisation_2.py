@@ -387,11 +387,11 @@ class BoxLayout_main(App):
             savedir = './legacy_survey/'
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8&pixscale=0.06'
-            savename = 'N' + str(self.counter)+ '_' + + str(ra) + '_' + str(dec) + 'dr8.jpg'
+            savename = 'N' + str(self.counter)+ '_' + str(ra) + '_' + str(dec) + 'dr8.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
             url = 'http://legacysurvey.org/viewer/cutout.jpg?ra=' + str(ra) + '&dec=' + str(
                 dec) + '&layer=dr8-resid&pixscale=0.06'
-            savename = 'N' + str(self.counter)+ '_' + + str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
+            savename = 'N' + str(self.counter)+ '_' + str(ra) + '_' + str(dec) + 'dr8-resid.jpg'
             urllib.request.urlretrieve(url, savedir + savename)
             strpopup=savedir+'N' + str(self.counter)+ '_'
             popup=LSDialog(ra,dec,strpopup)
