@@ -449,7 +449,7 @@ class BoxLayout_main(App):
 
         self.pathtofile = './files_to_visualize/'
 
-        self.listimage = sorted(os.listdir('./files_to_visualize/'))
+        self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile+ '*.fits')])
         self.counter = 0
         self.number_graded = 0
         self.COUNTER_MIN =0
