@@ -433,7 +433,7 @@ class BoxLayout_main(App):
 
     def update_df(self):
         df = self.df
-        cnt = self.counter - 1
+        cnt = self.counter# - 1
         df['file_name'].iloc[cnt] = self.listimage[cnt]
         df['classification'].iloc[cnt] = self.classification[cnt]
         df['subclassification'].iloc[cnt] = self.subclassification[cnt]
