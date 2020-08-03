@@ -24,7 +24,7 @@ from kivy.uix.textinput import TextInput
 import matplotlib.pyplot as plt
 from functools import partial
 from kivy.core.window import Window
-
+import platform
 
 class CommentDialog(Popup):
 
@@ -443,8 +443,21 @@ class BoxLayout_main(App):
 
     def build(self):
         # Please enter the path of ds9 executable here:
-        self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
-
+        #self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+        os_def = platform.system()
+        print(os_def)
+        if os_def == 'Linux':
+            self.pathds9 = '/usr/local/bin/ds9'
+            print('If your DS9 is not in /usr/local/bin/ds9 please edit the right path')
+        if os_def == 'Windows': 
+            self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+            print('If your DS9 is not in C:\\SAOImageDS9\\ds9.exe please edit the right path')
+        #this is for mac but don't know the path
+        if os_def == 'Darwin':
+            self.pathds9 = 'ds9'
+            print('Edit the right path to your ds9 executable depending on your OS')
+        else :
+            print('Edit the right path to your ds9 executable depending on your OS')
 
 
         self.pathtofile = './files_to_visualize/'
