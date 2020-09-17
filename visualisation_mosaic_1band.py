@@ -123,6 +123,19 @@ class BoxLayoutMosaic(BoxLayout_main):
         for f in filelist:
             os.remove(path_dir + f)
 
+    def repeat_random_objects(self,fraction):
+        number_of_duplicate=int(fraction*len(self.listimage))
+        print(number_of_duplicate,fraction*len(self.listimage))
+        random.seed(self.random_seed)
+        samples = random.sample(self.listimage, number_of_duplicate)
+        print (self.listimage)
+        self.listimage.extend(samples)
+        print (self.listimage)
+
+
+
+
+
     def update(self, event):
 
         self.set_start_number()
@@ -199,11 +212,17 @@ class BoxLayoutMosaic(BoxLayout_main):
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
         if len(sys.argv) > 1:
-            random_seed = sys.argv[1]
+            self.random_seed = sys.argv[1]
         else:
             print("Random seed set to default value 42")
-            random_seed = 42
-        random.Random(random_seed).shuffle(self.listimage)
+            self.random_seed = 42
+
+
+        self.repeat_random_objects(0.0)
+        self.clean_scratch(self.pathtoscratch)
+        self.clean_scratch(self.pathtoscratch_numpy)
+
+        random.Random(self.random_seed).shuffle(self.listimage)
 
         self.start_image_number = 0
         self.counter = 0
