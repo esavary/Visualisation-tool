@@ -28,7 +28,6 @@ from kivy.core.window import Window
 from PIL import Image
 import random
 
-
 class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
     def prepare_numpy_array(self):
@@ -114,12 +113,17 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.pathtoscratch_numpy = './scratch_numpy_array/'
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
-        if len(sys.argv)>1:
-            random_seed=sys.argv[1]
+
+        if len(sys.argv) > 1:
+            self.random_seed = sys.argv[1]
         else:
             print("Random seed set to default value 42")
-            random_seed = 42
-        random.Random(random_seed).shuffle(self.listimage)
+            self.random_seed = 42
+
+        self.repeat_random_objects(0.0) #beta version random repetition of objects
+        self.clean_scratch(self.pathtoscratch)
+        self.clean_scratch(self.pathtoscratch_numpy)
+
 
 
         self.start_image_number=0
