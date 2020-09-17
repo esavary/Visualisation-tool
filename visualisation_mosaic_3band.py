@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 from functools import partial
 from kivy.core.window import Window
 from PIL import Image
+import random
 
 
 class BoxLayoutMosaicColor(BoxLayoutMosaic):
@@ -113,6 +114,12 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.pathtoscratch_numpy = './scratch_numpy_array/'
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
+        if len(sys.argv)>1:
+            random_seed=sys.argv[1]
+        else:
+            print("Random seed set to default value 42")
+            random_seed = 42
+        random.Random(random_seed).shuffle(self.listimage)
 
 
         self.start_image_number=0
