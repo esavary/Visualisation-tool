@@ -135,6 +135,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.step = (self.scale_max - self.scale_min) / 10.
         self.scale_state = 'linear'
         self.number_per_frame=100
+        self.total_n_frame = int(len(self.listimage) / 100.)
         self.forward_backward_state=0
         self.dataframe=self.create_df()
 
@@ -167,12 +168,18 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         bforward.bind(on_press=self.forward)
         bbackward.bind(on_press=self.backward)
 
+        self.textnumber = TextInput(text=str(self.forward_backward_state), multiline=False, font_size=25)
+        self.textnumber.bind(on_text_validate=self.change_number)
+        tnumber = Label(text=str(' / ' + str(self.total_n_frame)), font_size=25)
+
         buttonbox.add_widget(buttonscale1)
         buttonbox.add_widget(buttonscale2)
         buttonbox.add_widget(buttonscale3)
         buttonbox.add_widget(buttonscale4)
         buttonbox.add_widget(bbackward)
         buttonbox.add_widget(bforward)
+        buttonbox.add_widget(self.textnumber)
+        buttonbox.add_widget(tnumber)
 
         allbox.add_widget(buttonbox)
         return allbox
