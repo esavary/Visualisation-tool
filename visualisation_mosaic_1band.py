@@ -140,7 +140,7 @@ class BoxLayoutMosaic(BoxLayout_main):
 
         self.set_start_number()
         start = self.counter
-
+        self.textnumber.text = str(self.forward_backward_state)
         self.clean_scratch(self.pathtoscratch)
 
         self.prepare_png(100)
@@ -152,12 +152,33 @@ class BoxLayoutMosaic(BoxLayout_main):
             # button.set_background_normal('cutecat.png')
 
             i = i + 1
+    def change_number(self,event):
+        try:
+            number=int(self.textnumber.text)
+        except ValueError:
+            number =self.counter
+            popup = Popup(title=' ', content=Label(text='Not an int'), size_hint=(None, None),
+                          size=(400, 100))
+            popup.open()
 
+        if number < 0:
+            popup = Popup(title=' ', content=Label(text='Wrong number'), size_hint=(None, None),
+                          size=(400, 100))
+            popup.open()
+        elif number * 100 > len(self.listimage):
+            print(number * 100 + 100,len(self.listimage),'****')
+            popup = Popup(title=' ', content=Label(text='Wrong number'), size_hint=(None, None),
+                          size=(400, 100))
+            popup.open()
+
+        else:
+            self.forward_backward_state=number
+            self.update(event)
     def forward(self, event):
         maxforward = len(self.listimage) / 100 + 1
         self.forward_backward_state = self.forward_backward_state + 1
 
-        if self.forward_backward_state * 100 + 100 > len(self.listimage):
+        if self.forward_backward_state * 100 +100 > len(self.listimage):
 
             if self.forward_backward_state > maxforward:
                 self.forward_backward_state = self.forward_backward_state - 1
@@ -207,6 +228,7 @@ class BoxLayoutMosaic(BoxLayout_main):
 
         self.pathtofile = './files_to_visualize/'
 
+
         self.pathtoscratch = './scratch_png/'
         self.pathtoscratch_numpy = './scratch_numpy_array/'
 
@@ -218,7 +240,7 @@ class BoxLayoutMosaic(BoxLayout_main):
             self.random_seed = 42
 
 
-        self.repeat_random_objects(0.0)
+        self.repeat_random_objects(0.8)
         self.clean_scratch(self.pathtoscratch)
         self.clean_scratch(self.pathtoscratch_numpy)
 
@@ -234,6 +256,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.scale_state = 'linear'
         self.number_per_frame = 100
         self.forward_backward_state = 0
+        self.total_n_frame =int(len(self.listimage)/100.)
         self.dataframe = self.create_df()
 
         self.prepare_numpy_array()
@@ -266,12 +289,18 @@ class BoxLayoutMosaic(BoxLayout_main):
         bforward.bind(on_press=self.forward)
         bbackward.bind(on_press=self.backward)
 
+        self.textnumber = TextInput(text=str(self.forward_backward_state), multiline=False, font_size=25)
+        self.textnumber.bind(on_text_validate=self.change_number)
+        tnumber = Label(text=str(' / ' + str(self.total_n_frame)), font_size=25)
+
         buttonbox.add_widget(buttonscale1)
         buttonbox.add_widget(buttonscale2)
         buttonbox.add_widget(buttonscale3)
         buttonbox.add_widget(buttonscale4)
         buttonbox.add_widget(bbackward)
         buttonbox.add_widget(bforward)
+        buttonbox.add_widget(self.textnumber)
+        buttonbox.add_widget(tnumber)
 
         allbox.add_widget(buttonbox)
         return allbox
