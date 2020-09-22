@@ -127,10 +127,14 @@ class BoxLayoutMosaic(BoxLayout_main):
         number_of_duplicate=int(fraction*len(self.listimage))
         print(number_of_duplicate,fraction*len(self.listimage))
         random.seed(self.random_seed)
-        samples = random.sample(self.listimage, number_of_duplicate)
-        print (self.listimage)
+        try:
+            samples = random.sample(self.listimage, number_of_duplicate)
+        except ValueError:
+            samples = random.sample(self.listimage, 0)
+            print("fraction higher than 1, number of repeated objects set to 0.")
+
         self.listimage.extend(samples)
-        print (self.listimage)
+
 
 
 
@@ -226,10 +230,11 @@ class BoxLayoutMosaic(BoxLayout_main):
         return df
 
     def build(self):
-        self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+        #self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
         self.pathtofile = './files_to_visualize/'
-        
+        self.pathtofile = 'D:\\SiloLenses\\'
+
 
 
         self.pathtoscratch = './scratch_png/'
@@ -241,9 +246,13 @@ class BoxLayoutMosaic(BoxLayout_main):
         else:
             print("Random seed set to default value 42")
             self.random_seed = 42
+        if len(sys.argv) > 2:
+            self.fraction = sys.argv[2]
+        else:
+            print("No repeated objects")
+            self.fraction = 0
 
-
-        self.repeat_random_objects(0.0)
+        self.repeat_random_objects(self.fraction)
         self.clean_scratch(self.pathtoscratch)
         self.clean_scratch(self.pathtoscratch_numpy)
 
