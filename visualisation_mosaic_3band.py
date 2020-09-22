@@ -120,7 +120,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
             print("Random seed set to default value 42")
             self.random_seed = 42
         if len(sys.argv) > 2:
-            self.fraction = sys.argv[2]
+            self.fraction = float(sys.argv[2])
         else:
             print("No repeated objects")
             self.fraction = 0
