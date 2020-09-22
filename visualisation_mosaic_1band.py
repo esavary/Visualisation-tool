@@ -243,7 +243,7 @@ class BoxLayoutMosaic(BoxLayout_main):
             self.random_seed = 42
 
 
-        self.repeat_random_objects(0.8)
+        self.repeat_random_objects(0.0)
         self.clean_scratch(self.pathtoscratch)
         self.clean_scratch(self.pathtoscratch_numpy)
 
