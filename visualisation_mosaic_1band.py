@@ -146,11 +146,13 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.prepare_png(100)
 
         i = start
+        j=0
 
         for button in self.list_of_buttons:
             button.set_background_normal(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
             # button.set_background_normal('cutecat.png')
-
+            self.dataframe['Grid_pos'][100 * self.forward_backward_state + j] = j + 1
+            j=j+1
             i = i + 1
     def change_number(self,event):
         try:
@@ -227,6 +229,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
         self.pathtofile = './files_to_visualize/'
+        
 
 
         self.pathtoscratch = './scratch_png/'
@@ -240,7 +243,7 @@ class BoxLayoutMosaic(BoxLayout_main):
             self.random_seed = 42
 
 
-        self.repeat_random_objects(0.0)
+        self.repeat_random_objects(0.8)
         self.clean_scratch(self.pathtoscratch)
         self.clean_scratch(self.pathtoscratch_numpy)
 
@@ -268,6 +271,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         for i in np.arange(self.number_per_frame):
             self.list_of_buttons.append(
                 CustomButton(background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+            self.dataframe['Grid_pos'][100 * self.forward_backward_state + i] = i + 1
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
         for button in self.list_of_buttons:
