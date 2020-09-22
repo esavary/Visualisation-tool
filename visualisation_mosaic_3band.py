@@ -119,8 +119,14 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         else:
             print("Random seed set to default value 42")
             self.random_seed = 42
+        if len(sys.argv) > 2:
+            self.fraction = sys.argv[2]
+        else:
+            print("No repeated objects")
+            self.fraction = 0
 
-        self.repeat_random_objects(0.0) #beta version random repetition of objects
+        self.repeat_random_objects(self.fraction)
+
         self.clean_scratch(self.pathtoscratch)
         self.clean_scratch(self.pathtoscratch_numpy)
 
