@@ -221,12 +221,20 @@ class BoxLayoutMosaic(BoxLayout_main):
 
             self.dataframe.to_csv('./classifications/classification_mosaic_1band_autosave' + '.csv', index=False)
 
-    def create_df(self):
-        dfc = ['file_name', 'classification','Grid_pos']
-        df = pd.DataFrame(columns=dfc)
-        df['file_name'] = self.listimage
-        df['classification'] = np.zeros(np.shape(self.listimage))
-        df['Grid_pos'] = np.zeros(np.shape(self.listimage))
+ def create_df(self):
+        class_file = np.sort(glob.glob('./classifications/classification_mosaic_1band_autosave.csv'))
+        print (class_file, len(class_file))
+        if len(class_file) >= 1:
+
+            print('reading ' + str(class_file[len(class_file) - 1]))
+            df = pd.read_csv(class_file[len(class_file) - 1])
+
+        else:
+            dfc = ['file_name', 'classification','Grid_pos']
+            df = pd.DataFrame(columns=dfc)
+            df['file_name'] = self.listimage
+            df['classification'] = np.zeros(np.shape(self.listimage))
+            df['Grid_pos'] = np.zeros(np.shape(self.listimage))
         return df
 
     def build(self):
