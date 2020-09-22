@@ -147,6 +147,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.list_of_buttons=[]
         for i in np.arange(self.number_per_frame):
             self.list_of_buttons.append(CustomButton(background_normal=self.pathtoscratch+str(i+1)+self.scale_state+str(0)+'.png'))
+            self.dataframe['Grid_pos'][100 * self.forward_backward_state + i] = i + 1
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
         for button in self.list_of_buttons:
