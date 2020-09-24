@@ -111,6 +111,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
         self.pathtoscratch='./scratch_png/'
         self.pathtoscratch_numpy = './scratch_numpy_array/'
+        self.path_background = 'green.png'
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
 
@@ -126,6 +127,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
             self.fraction = 0
 
         self.repeat_random_objects(self.fraction)
+        random.Random(self.random_seed).shuffle(self.listimage)
 
         self.clean_scratch(self.pathtoscratch)
         self.clean_scratch(self.pathtoscratch_numpy)
@@ -152,7 +154,13 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         superbox = GridLayout(cols=10,size_hint_y=0.9)
         self.list_of_buttons=[]
         for i in np.arange(self.number_per_frame):
-            self.list_of_buttons.append(CustomButton(background_normal=self.pathtoscratch+str(i+1)+self.scale_state+str(0)+'.png'))
+            if self.dataframe['classification'][i] == 0:
+                self.list_of_buttons.append(
+                    CustomButton(0, background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(
+                        0) + '.png'))
+            else:
+                self.list_of_buttons.append(
+                    CustomButton(1, background_normal=self.path_background))
             self.dataframe['Grid_pos'][100 * self.forward_backward_state + i] = i + 1
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
