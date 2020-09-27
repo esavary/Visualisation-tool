@@ -154,16 +154,20 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         superbox = GridLayout(cols=10,size_hint_y=0.9)
         self.list_of_buttons=[]
         for i in np.arange(self.number_per_frame):
-            if self.dataframe['classification'][i] == 0:
-                self.list_of_buttons.append(
-                    CustomButton(0, background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(
-                        0) + '.png'))
-            else:
-                self.list_of_buttons.append(
-                    CustomButton(1, background_normal=self.path_background))
-            self.dataframe['Grid_pos'][100 * self.forward_backward_state + i] = i + 1
-            self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
+            try:
+                if self.dataframe['classification'][i] == 0:
+                    self.list_of_buttons.append(
+                        CustomButton(0, background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(
+                            0) + '.png'))
+                else:
+                    self.list_of_buttons.append(
+                        CustomButton(1, background_normal=self.path_background))
+                self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + i] = i + 1
+            except KeyError:
+                self.list_of_buttons.append(CustomButton(1, background_normal=self.pathtoscratch + str(
+                    i + 1) + self.scale_state + str(0) + '.png'))
 
+            self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
         for button in self.list_of_buttons:
             superbox.add_widget(button)
 
