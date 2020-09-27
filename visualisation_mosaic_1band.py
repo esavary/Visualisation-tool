@@ -136,7 +136,7 @@ class BoxLayoutMosaic(BoxLayout_main):
 
     def repeat_random_objects(self,fraction):
         number_of_duplicate=round(fraction*len(self.listimage))
-        print(number_of_duplicate,fraction*len(self.listimage))
+        print('duplicate',number_of_duplicate,fraction*len(self.listimage))
         random.seed(self.random_seed)
         try:
             samples = random.sample(self.listimage, number_of_duplicate)
@@ -164,7 +164,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         j=0
 
         for button in self.list_of_buttons:
-            print(100 * self.forward_backward_state + j)
+            print('button',100 * self.forward_backward_state + j)
             try:
                 if self.dataframe['classification'][100 * self.forward_backward_state + j] == 0:
                     button.set_background_normal(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
@@ -178,7 +178,7 @@ class BoxLayoutMosaic(BoxLayout_main):
 
 
             # button.set_background_normal('cutecat.png')
-            self.dataframe['Grid_pos'][100 * self.forward_backward_state + j] = j + 1
+            self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
             j=j+1
             i = i + 1
     def change_number(self,event):
@@ -240,7 +240,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         else:
 
 
-            self.dataframe['Grid_pos'][100 * self.forward_backward_state + number]=number+1
+            self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + number]=number+1
 
 
 
@@ -249,12 +249,12 @@ class BoxLayoutMosaic(BoxLayout_main):
 
                 self.list_of_buttons[number].set_background_normal( self.pathtoscratch + str(number + 1 + self.forward_backward_state * 100) + self.scale_state + str(self.counter - 101) + '.png')
 
-                self.dataframe['classification'][100 * self.forward_backward_state + number] = 0
+                self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 0
             else:
 
                 self.list_of_buttons[number].set_background_normal(self.path_background)
 
-                self.dataframe['classification'][100 * self.forward_backward_state + number] = 1
+                self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 1
             self.dataframe.to_csv('./classifications/classification_mosaic_1band_autosave' + '.csv', index=False)
 
 
@@ -267,18 +267,21 @@ class BoxLayoutMosaic(BoxLayout_main):
             df = pd.read_csv(class_file[len(class_file) - 1])
 
         else:
+            print('creating dataframe')
             dfc = ['file_name', 'classification','Grid_pos']
             df = pd.DataFrame(columns=dfc)
             df['file_name'] = self.listimage
             df['classification'] = np.zeros(np.shape(self.listimage))
             df['Grid_pos'] = np.zeros(np.shape(self.listimage))
+            print (df)
         return df
 
     def build(self):
         #self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
 
         self.pathtofile = './files_to_visualize/'
-        
+        #self.pathtofile ='D:\\Simunoboost\\'
+
 
 
 
@@ -302,6 +305,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.clean_scratch(self.pathtoscratch)
         self.clean_scratch(self.pathtoscratch_numpy)
 
+
         random.Random(self.random_seed).shuffle(self.listimage)
 
         self.start_image_number = 0
@@ -317,6 +321,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.total_n_frame =int(len(self.listimage)/100.)
         self.dataframe = self.create_df()
 
+
         self.prepare_numpy_array()
         self.prepare_png(self.number_per_frame)
         allbox = BoxLayout(orientation='vertical')
@@ -324,14 +329,17 @@ class BoxLayoutMosaic(BoxLayout_main):
         superbox = GridLayout(cols=10, size_hint_y=0.9)
         self.list_of_buttons = []
         for i in np.arange(self.number_per_frame):
-            if self.dataframe['classification'][i]==0:
-                self.list_of_buttons.append(
-                    CustomButton(0,background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
-            else:
-                self.list_of_buttons.append(
-                    CustomButton(1, background_normal=self.path_background))
+            try:
+                if self.dataframe['classification'][i]==0:
+                    self.list_of_buttons.append(
+                        CustomButton(0,background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+                else:
+                    self.list_of_buttons.append(
+                        CustomButton(1, background_normal=self.path_background))
+                self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + i] = i + 1
+            except KeyError:
+                self.list_of_buttons.append(CustomButton(1, background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
 
-            self.dataframe['Grid_pos'][100 * self.forward_backward_state + i] = i + 1
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
         for button in self.list_of_buttons:
