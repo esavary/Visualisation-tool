@@ -164,7 +164,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         j=0
 
         for button in self.list_of_buttons:
-            print('button',100 * self.forward_backward_state + j)
+
             try:
                 if self.dataframe['classification'][100 * self.forward_backward_state + j] == 0:
                     button.set_background_normal(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
@@ -255,11 +255,11 @@ class BoxLayoutMosaic(BoxLayout_main):
                 self.list_of_buttons[number].set_background_normal(self.path_background)
 
                 self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 1
-            self.dataframe.to_csv('./classifications/classification_mosaic_1band_autosave' + '.csv', index=False)
+            self.dataframe.to_csv('./classifications/classification_mosaic_autosave' + '.csv', index=False)
 
 
     def create_df(self):
-        class_file = np.sort(glob.glob('./classifications/classification_mosaic_1band_autosave.csv'))
+        class_file = np.sort(glob.glob('./classifications/classification_mosaic_autosave.csv'))
         print (class_file, len(class_file))
         if len(class_file) >= 1:
 
@@ -273,7 +273,7 @@ class BoxLayoutMosaic(BoxLayout_main):
             df['file_name'] = self.listimage
             df['classification'] = np.zeros(np.shape(self.listimage))
             df['Grid_pos'] = np.zeros(np.shape(self.listimage))
-            print (df)
+
         return df
 
     def build(self):
@@ -300,10 +300,17 @@ class BoxLayoutMosaic(BoxLayout_main):
         else:
             print("No repeated objects")
             self.fraction = 0
+        if len(sys.argv) > 3:
+            self.numpy_computing = sys.argv[3]
+        else:
+            print("Computing numpy arrays...")
+            self.numpy_computing = 'true'
 
         self.repeat_random_objects(self.fraction)
+
         self.clean_scratch(self.pathtoscratch)
-        self.clean_scratch(self.pathtoscratch_numpy)
+        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
+            self.clean_scratch(self.pathtoscratch_numpy)
 
 
         random.Random(self.random_seed).shuffle(self.listimage)
@@ -321,8 +328,8 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.total_n_frame =int(len(self.listimage)/100.)
         self.dataframe = self.create_df()
 
-
-        self.prepare_numpy_array()
+        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
+            self.prepare_numpy_array()
         self.prepare_png(self.number_per_frame)
         allbox = BoxLayout(orientation='vertical')
         buttonbox = BoxLayout(orientation='horizontal', size_hint_y=0.1)
