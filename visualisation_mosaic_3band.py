@@ -125,12 +125,18 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         else:
             print("No repeated objects")
             self.fraction = 0
+        if len(sys.argv) > 3:
+            self.numpy_computing = sys.argv[3]
+        else:
+            print("Computing numpy arrays...")
+            self.numpy_computing = 'true'
 
         self.repeat_random_objects(self.fraction)
         random.Random(self.random_seed).shuffle(self.listimage)
 
         self.clean_scratch(self.pathtoscratch)
-        self.clean_scratch(self.pathtoscratch_numpy)
+        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
+            self.clean_scratch(self.pathtoscratch_numpy)
 
 
 
@@ -147,7 +153,8 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.forward_backward_state=0
         self.dataframe=self.create_df()
 
-        self.prepare_numpy_array()
+        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
+            self.prepare_numpy_array()
         self.prepare_png(self.number_per_frame)
         allbox= BoxLayout(orientation='vertical')
         buttonbox= BoxLayout(orientation='horizontal',size_hint_y=0.1)
