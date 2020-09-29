@@ -163,9 +163,9 @@ class BoxLayout_main(App):
 
 
 
-     def background_rms_image(self,cb, image):
-
-
+    def background_rms_image(self,cb, image):
+    
+    
         xg, yg = np.shape(image)
         cut0 = image[0:cb, 0:cb]
         cut1 = image[xg - cb:xg, 0:cb]
