@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 from functools import partial
 from kivy.core.window import Window
 from PIL import Image
-
+import random
 
 class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
@@ -111,8 +111,33 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
         self.pathtoscratch='./scratch_png/'
         self.pathtoscratch_numpy = './scratch_numpy_array/'
+        self.path_background = 'green.png'
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
+
+        if len(sys.argv) > 1:
+            self.random_seed = sys.argv[1]
+        else:
+            print("Random seed set to default value 42")
+            self.random_seed = 42
+        if len(sys.argv) > 2:
+            self.fraction = float(sys.argv[2])
+        else:
+            print("No repeated objects")
+            self.fraction = 0
+        if len(sys.argv) > 3:
+            self.numpy_computing = sys.argv[3]
+        else:
+            print("Computing numpy arrays...")
+            self.numpy_computing = 'true'
+
+        self.repeat_random_objects(self.fraction)
+        random.Random(self.random_seed).shuffle(self.listimage)
+
+        self.clean_scratch(self.pathtoscratch)
+        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
+            self.clean_scratch(self.pathtoscratch_numpy)
+
 
 
         self.start_image_number=0
@@ -124,19 +149,32 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.step = (self.scale_max - self.scale_min) / 10.
         self.scale_state = 'linear'
         self.number_per_frame=100
+        self.total_n_frame = int(len(self.listimage) / 100.)
         self.forward_backward_state=0
         self.dataframe=self.create_df()
 
-        self.prepare_numpy_array()
+        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
+            self.prepare_numpy_array()
         self.prepare_png(self.number_per_frame)
         allbox= BoxLayout(orientation='vertical')
         buttonbox= BoxLayout(orientation='horizontal',size_hint_y=0.1)
         superbox = GridLayout(cols=10,size_hint_y=0.9)
         self.list_of_buttons=[]
         for i in np.arange(self.number_per_frame):
-            self.list_of_buttons.append(CustomButton(background_normal=self.pathtoscratch+str(i+1)+self.scale_state+str(0)+'.png'))
-            self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
+            try:
+                if self.dataframe['classification'][i] == 0:
+                    self.list_of_buttons.append(
+                        CustomButton(0, background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(
+                            0) + '.png'))
+                else:
+                    self.list_of_buttons.append(
+                        CustomButton(1, background_normal=self.path_background))
+                self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + i] = i + 1
+            except KeyError:
+                self.list_of_buttons.append(CustomButton(1, background_normal=self.pathtoscratch + str(
+                    i + 1) + self.scale_state + str(0) + '.png'))
 
+            self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
         for button in self.list_of_buttons:
             superbox.add_widget(button)
 
@@ -156,12 +194,18 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         bforward.bind(on_press=self.forward)
         bbackward.bind(on_press=self.backward)
 
+        self.textnumber = TextInput(text=str(self.forward_backward_state), multiline=False, font_size=25)
+        self.textnumber.bind(on_text_validate=self.change_number)
+        tnumber = Label(text=str(' / ' + str(self.total_n_frame)), font_size=25)
+
         buttonbox.add_widget(buttonscale1)
         buttonbox.add_widget(buttonscale2)
         buttonbox.add_widget(buttonscale3)
         buttonbox.add_widget(buttonscale4)
         buttonbox.add_widget(bbackward)
         buttonbox.add_widget(bforward)
+        buttonbox.add_widget(self.textnumber)
+        buttonbox.add_widget(tnumber)
 
         allbox.add_widget(buttonbox)
         return allbox

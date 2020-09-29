@@ -8,6 +8,11 @@ If you want to interrupt the session before the end of the classification, it is
 The tool can also handle color images datacubes.
 New: you can open the image in ds9 but you need to specify the path to your ds9 executable on line 26 before.
 
+For the mosaic tool specify the randomseed in the command line. e.g.:
+">python visualisation_mosaic_3band.py 3"
+
+
+
 New version:
 
 visualisation_2.py for 1 band images
