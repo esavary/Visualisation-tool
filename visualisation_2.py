@@ -162,14 +162,22 @@ class BoxLayout_main(App):
 
 
 
-
     def background_rms_image(self,cb, image):
         xg, yg = np.shape(image)
         cut0 = image[0:cb, 0:cb]
         cut1 = image[xg - cb:xg, 0:cb]
         cut2 = image[0:cb, yg - cb:yg]
         cut3 = image[xg - cb:xg, yg - cb:yg]
-        std = np.std([cut0, cut1, cut2, cut3])
+        l = [cut0, cut1, cut2, cut3]
+        m = np.mean(np.mean(l, axis=1), axis=1)
+        ml = min(m)
+        mm = max(m)
+        if mm > 5 * ml:
+            s = np.sort(l, axis=0)
+            nl = s[:-1]
+            std = np.std(nl)
+        else:
+            std = np.std([cut0, cut1, cut2, cut3])
         return std
 
     def scale_val(self,image_array):
