@@ -52,11 +52,21 @@ class BoxLayoutMosaic(BoxLayout_main):
 
         self.counter = self.forward_backward_state * 100
 
-    def draw_image(self, name, scale_state, defaultvalue=True, max=1, min=0):
+    def read_fits(self, i):
+
+        file = self.pathtofile + self.listimage[i]
+        # Note : memmap=False is much faster when opening/closing many small files
+        with pyfits.open(file, memmap=False) as hdu_list:
+            image = hdu_list[0].data
+        return image
+
+
+
+    def draw_image(self, index, scale_state, defaultvalue=True, max=1, min=0):
 
         try:
-            image = np.load(self.pathtoscratch_numpy + name)
-        except FileNotFoundError:
+            image = self.read_fits(index)
+        except IndexError:
             image = np.ones((44, 44)) * 0.0000001
 
         if defaultvalue == True:
@@ -110,18 +120,18 @@ class BoxLayoutMosaic(BoxLayout_main):
             image[indices1] = np.arcsinh((image[indices1] - self.scale_min) / 2.0) / factor
 
         return image
-
+    '''
     def prepare_numpy_array(self):
         for i in np.arange(len(self.listimage)):
             image, height, width = self.numpyarray_from_fits(self.pathtofile + self.listimage[i])
             np.save(self.pathtoscratch_numpy + str(i + 1), image)
-
+    '''
     def prepare_png(self, number):
 
         start = self.counter
 
         for i in np.arange(start, start + number + 1):
-            img = self.draw_image(str(i + 1) + '.npy', self.scale_state)
+            img = self.draw_image(i, self.scale_state)
 
             image = Image.fromarray(np.uint8(img * 255), 'L')
             image = image.resize((150, 150), Image.ANTIALIAS)
@@ -286,7 +296,7 @@ class BoxLayoutMosaic(BoxLayout_main):
 
 
         self.pathtoscratch = './scratch_png/'
-        self.pathtoscratch_numpy = './scratch_numpy_array/'
+
         self.path_background='green.png'
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
@@ -300,17 +310,13 @@ class BoxLayoutMosaic(BoxLayout_main):
         else:
             print("No repeated objects")
             self.fraction = 0
-        if len(sys.argv) > 3:
-            self.numpy_computing = sys.argv[3]
-        else:
-            print("Computing numpy arrays...")
-            self.numpy_computing = 'true'
+
+
 
         self.repeat_random_objects(self.fraction)
 
         self.clean_scratch(self.pathtoscratch)
-        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
-            self.clean_scratch(self.pathtoscratch_numpy)
+
 
 
         random.Random(self.random_seed).shuffle(self.listimage)
@@ -328,8 +334,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.total_n_frame =int(len(self.listimage)/100.)
         self.dataframe = self.create_df()
 
-        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
-            self.prepare_numpy_array()
+
         self.prepare_png(self.number_per_frame)
         allbox = BoxLayout(orientation='vertical')
         buttonbox = BoxLayout(orientation='horizontal', size_hint_y=0.1)
