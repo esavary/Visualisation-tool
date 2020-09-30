@@ -183,12 +183,13 @@ class BoxLayoutMosaic(BoxLayout_main):
                 else:
                     button.set_background_normal(self.path_background)
                     button.set_lensing_value(1)
+                self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
             except KeyError:
                 button.set_background_normal(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
 
 
             # button.set_background_normal('cutecat.png')
-            self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
+
             j=j+1
             i = i + 1
     def change_number(self,event):
