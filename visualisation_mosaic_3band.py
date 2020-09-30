@@ -203,3 +203,4 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
 if __name__ == '__main__':
     BoxLayoutMosaicColor().run()
+    
