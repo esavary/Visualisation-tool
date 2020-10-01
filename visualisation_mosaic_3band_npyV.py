@@ -97,7 +97,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
             try:
                 img=self.draw_image(self.listimage[i], self.scale_state)
-                print('prepare png',self.listimage[i])
+                #print('prepare png',self.listimage[i])
             except IndexError:
                 img = self.draw_image('not_existing.fits', self.scale_state)
             image = Image.fromarray(np.uint8(img * 255), 'RGB')
@@ -120,7 +120,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         #self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtoscratch_numpy + '*.npy')])
-        print(self.listimage[0])
+        #print(self.listimage[0])
         if len(sys.argv) > 1:
             self.random_seed = sys.argv[1]
         else:
