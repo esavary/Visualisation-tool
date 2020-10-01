@@ -266,7 +266,8 @@ class BoxLayoutMosaic(BoxLayout_main):
                 self.list_of_buttons[number].set_background_normal(self.path_background)
 
                 self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 1
-            self.dataframe.to_csv('./classifications/classification_mosaic_autosave' + '.csv', index=False)
+            #self.dataframe.to_csv('./classifications/classification_mosaic_autosave' + '.csv', index=False)
+            self.dataframe.to_csv('./classifications/classification_mosaic_autosave_' + str(self.random_seed)+'.csv', index=False)
 
 
     def create_df(self):
