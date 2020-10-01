@@ -173,12 +173,13 @@ class BoxLayoutMosaic(BoxLayout_main):
                 else:
                     button.set_background_normal(self.path_background)
                     button.set_lensing_value(1)
+                self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
             except KeyError:
                 button.set_background_normal(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
 
 
             # button.set_background_normal('cutecat.png')
-            self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
+
             j=j+1
             i = i + 1
     def change_number(self,event):
@@ -300,17 +301,12 @@ class BoxLayoutMosaic(BoxLayout_main):
         else:
             print("No repeated objects")
             self.fraction = 0
-        if len(sys.argv) > 3:
-            self.numpy_computing = sys.argv[3]
-        else:
-            print("Computing numpy arrays...")
-            self.numpy_computing = 'true'
+
 
         self.repeat_random_objects(self.fraction)
 
         self.clean_scratch(self.pathtoscratch)
-        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
-            self.clean_scratch(self.pathtoscratch_numpy)
+
 
 
         random.Random(self.random_seed).shuffle(self.listimage)
@@ -328,8 +324,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.total_n_frame =int(len(self.listimage)/100.)
         self.dataframe = self.create_df()
 
-        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
-            self.prepare_numpy_array()
+
         self.prepare_png(self.number_per_frame)
         allbox = BoxLayout(orientation='vertical')
         buttonbox = BoxLayout(orientation='horizontal', size_hint_y=0.1)
