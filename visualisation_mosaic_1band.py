@@ -271,7 +271,7 @@ class BoxLayoutMosaic(BoxLayout_main):
 
 
     def create_df(self):
-        class_file = np.sort(glob.glob('./classifications/classification_mosaic_autosave.csv'))
+        class_file = np.sort(glob.glob('./classifications/classification_mosaic_autosave_'+ str(self.random_seed)+'.csv'))
         print (class_file, len(class_file))
         if len(class_file) >= 1:
 
