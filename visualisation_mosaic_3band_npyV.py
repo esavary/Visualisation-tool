@@ -95,9 +95,11 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
         for i in np.arange(start,start+number+1):
 
-#            img=self.draw_image(str(i+1)+'.npy', self.scale_state)
-            img=self.draw_image(self.listimage[i], self.scale_state)
-            print('prepare png',self.listimage[i])
+            try:
+                img=self.draw_image(self.listimage[i], self.scale_state)
+                print('prepare png',self.listimage[i])
+            except IndexError:
+                img = self.draw_image('not_existing.fits', self.scale_state)
             image = Image.fromarray(np.uint8(img * 255), 'RGB')
             image=image.resize((150,150), Image.ANTIALIAS)
             image.save(self.pathtoscratch+str(i+1)+self.scale_state+str(start)+'.png','PNG')
@@ -131,19 +133,16 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
             self.fraction = 0
         if len(sys.argv) > 3:
             self.numpy_computing = sys.argv[3]
-        else:
-            print("Computing numpy arrays...")
-            self.numpy_computing = 'true'
+
 
         self.repeat_random_objects(self.fraction)
         random.Random(self.random_seed).shuffle(self.listimage)
 
-        print(self.listimage[0])
+
 
 
         self.clean_scratch(self.pathtoscratch)
-        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
-            self.clean_scratch(self.pathtoscratch_numpy)
+
 
 
 
@@ -160,8 +159,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.forward_backward_state=0
         self.dataframe=self.create_df()
 
-#        if self.numpy_computing.lower() in ['true', '1', 't', 'y', 'yes', 'oui', 'yup', 'certainly', 'ok']:
-#            self.prepare_numpy_array()
+
         self.prepare_png(self.number_per_frame)
         allbox= BoxLayout(orientation='vertical')
         buttonbox= BoxLayout(orientation='horizontal',size_hint_y=0.1)
