@@ -2,7 +2,7 @@
 import matplotlib
 
 matplotlib.use("Agg")
-from visualisation_2 import BoxLayout_main
+from visualisation_1band import BoxLayout_main
 import math
 import numpy as np
 import sys
