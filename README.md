@@ -28,6 +28,9 @@ The new version is compatible only with python 3.
 Necessary modules for the new version:
 - pandas
 - kivy + kivy garden matplotlib
+- numpy
+- astropy
+- Pillow
 
 
 To obtain cutouts from the legacy survey a csv file with coordinates has to be stored in the folder csv_catalog
