@@ -1,8 +1,10 @@
 
-# Warning: the code is compatible with Python 3 up to Python 3.7, but not with Python >= 3.8. 
+
 
 
 # Visualisation-tool
+
+Warning: the code is compatible with Python 3 up to Python 3.7, but not with Python >= 3.8. 
 
 Tool to classify lenses vs non lenses
 
