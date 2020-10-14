@@ -29,19 +29,22 @@ from kivy.core.window import Window
 from PIL import Image
 import time
 import random
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.image import Image as kImage
 
+class ImageButton(ButtonBehavior, kImage):
+    pass
 
-class CustomButton(Button):
+class CustomButton(ImageButton):
     def __init__(self, lensing_value, **kwargs):
-        Button.__init__(self, **kwargs)
+        ImageButton.__init__(self,  allow_stretch=True, keep_ratio=True,**kwargs)
         self.lensing_value=lensing_value
 
-    def set_background_normal(self, image_path):
-        self.background_normal = image_path
+    def set_source(self, image_path):
+        self.source = image_path
+
     def set_lensing_value(self,l):
         self.lensing_value=l
-
-
 
     def get_lensing_value(self):
         return self.lensing_value
@@ -177,18 +180,18 @@ class BoxLayoutMosaic(BoxLayout_main):
 
             try:
                 if self.dataframe['classification'][100 * self.forward_backward_state + j] == 0:
-                    button.set_background_normal(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
+                    button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
                     button.set_lensing_value(0)
 
                 else:
-                    button.set_background_normal(self.path_background)
+                    button.set_source(self.path_background)
                     button.set_lensing_value(1)
                 self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
             except KeyError:
-                button.set_background_normal(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
+                button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
 
 
-            # button.set_background_normal('cutecat.png')
+            # button.set_source('cutecat.png')
 
             j=j+1
             i = i + 1
@@ -257,13 +260,11 @@ class BoxLayoutMosaic(BoxLayout_main):
 
             self.list_of_buttons[number].set_lensing_value(np.abs(self.list_of_buttons[number].get_lensing_value()-1))
             if self.list_of_buttons[number].get_lensing_value()==0:
-
-                self.list_of_buttons[number].set_background_normal( self.pathtoscratch + str(number + 1 + self.forward_backward_state * 100) + self.scale_state + str(self.counter - 101) + '.png')
+                self.list_of_buttons[number].set_source( self.pathtoscratch + str(number + 1 + self.forward_backward_state * 100) + self.scale_state + str(self.counter - 101) + '.png')
 
                 self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 0
             else:
-
-                self.list_of_buttons[number].set_background_normal(self.path_background)
+                self.list_of_buttons[number].set_source(self.path_background)
 
                 self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 1
             #self.dataframe.to_csv('./classifications/classification_mosaic_autosave' + '.csv', index=False)
@@ -340,19 +341,20 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.prepare_png(self.number_per_frame)
         allbox = BoxLayout(orientation='vertical')
         buttonbox = BoxLayout(orientation='horizontal', size_hint_y=0.1)
+        #superbox = GridLayout(cols=10, size_hint_y=1.0, size_hint_x=1.0)
         superbox = GridLayout(cols=10, size_hint_y=0.9)
         self.list_of_buttons = []
         for i in np.arange(self.number_per_frame):
             try:
                 if self.dataframe['classification'][i]==0:
                     self.list_of_buttons.append(
-                        CustomButton(0,background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+                        CustomButton(0,source=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
                 else:
                     self.list_of_buttons.append(
-                        CustomButton(1, background_normal=self.path_background))
+                        CustomButton(1, source=self.path_background))
                 self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + i] = i + 1
             except KeyError:
-                self.list_of_buttons.append(CustomButton(1, background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+                self.list_of_buttons.append(CustomButton(1, source=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
 
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
