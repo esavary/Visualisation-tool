@@ -3,6 +3,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 from visualisation_1band import BoxLayout_main
+from visualisation_mosaic_1band import CustomButton
 import math
 import numpy as np
 import sys
@@ -31,20 +32,7 @@ import time
 import random
 
 
-class CustomButton(Button):
-    def __init__(self, lensing_value, **kwargs):
-        Button.__init__(self, **kwargs)
-        self.lensing_value=lensing_value
 
-    def set_background_normal(self, image_path):
-        self.background_normal = image_path
-    def set_lensing_value(self,l):
-        self.lensing_value=l
-
-
-
-    def get_lensing_value(self):
-        return self.lensing_value
 
 
 class BoxLayoutMosaic(BoxLayout_main):
@@ -334,13 +322,13 @@ class BoxLayoutMosaic(BoxLayout_main):
             try:
                 if self.dataframe['classification'][i]==0:
                     self.list_of_buttons.append(
-                        CustomButton(0,background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+                        CustomButton(0,source=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
                 else:
                     self.list_of_buttons.append(
-                        CustomButton(1, background_normal=self.path_background))
+                        CustomButton(1, source=self.path_background))
                 self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + i] = i + 1
             except KeyError:
-                self.list_of_buttons.append(CustomButton(1, background_normal=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+                self.list_of_buttons.append(CustomButton(1, source=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
 
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
