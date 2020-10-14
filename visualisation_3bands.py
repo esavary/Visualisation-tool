@@ -291,6 +291,7 @@ class BoxLayoutColor(BoxLayout_main):
         verticalBox = BoxLayout(orientation='horizontal', size_hint_y=0.15)
 
         button3 = Button(text="Sure Lens", background_color=(0.4, 1, 0, 1))
+        button32 = Button(text="Single Arc", background_color=(0.4, 1, 0, 1))
 
         button4 = Button(text="Maybe Lens", background_color=(0.4, 1, 0, 1))
 
@@ -301,6 +302,7 @@ class BoxLayoutColor(BoxLayout_main):
         button9 = Button(text="Elliptical")
         button10 = Button(text="Disk")
         button3.bind(on_press=partial(self.classify, 'L', 1))
+        button32.bind(on_press=partial(self.classify, 'SA', 1))
         button4.bind(on_press=partial(self.classify, 'ML', 1))
         button5.bind(on_press=partial(self.classify, 'NL', 1))
         button6.bind(on_press=partial(self.classify, 'Merger', 2))
@@ -342,6 +344,7 @@ class BoxLayoutColor(BoxLayout_main):
         horizontalBoxup.add_widget(tnumber)
 
         verticalBox.add_widget(button3)
+        verticalBox.add_widget(button32)
 
         verticalBox.add_widget(button4)
         verticalBox.add_widget(button5)
