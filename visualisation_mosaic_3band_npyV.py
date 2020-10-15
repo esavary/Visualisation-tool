@@ -114,7 +114,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
 
         self.pathtoscratch='./scratch_png/'
-        self.pathtoscratch_numpy = 'D:\\inspection\\scratch_numpy_array\\scratch_numpy_array\\'
+        self.pathtoscratch_numpy = './scratch_numpy_array/'
         self.path_background = 'green.png'
 
         #self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile + '*.fits')])
