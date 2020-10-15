@@ -179,7 +179,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
 
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
-            self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
+            
         for button in self.list_of_buttons:
             superbox.add_widget(button)
 
