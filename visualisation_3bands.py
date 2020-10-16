@@ -291,7 +291,7 @@ class BoxLayoutColor(BoxLayout_main):
         verticalBox = BoxLayout(orientation='horizontal', size_hint_y=0.15)
 
         button3 = Button(text="Sure Lens", background_color=(0.4, 1, 0, 1))
-        button32 = Button(text="Single Arc", background_color=(0.4, 1, 0, 1))
+        button32 = Button(text="Flexion", background_color=(0.4, 1, 0, 1))
 
         button4 = Button(text="Maybe Lens", background_color=(0.4, 1, 0, 1))
 
@@ -344,9 +344,10 @@ class BoxLayoutColor(BoxLayout_main):
         horizontalBoxup.add_widget(tnumber)
 
         verticalBox.add_widget(button3)
-        verticalBox.add_widget(button32)
+        
 
         verticalBox.add_widget(button4)
+        verticalBox.add_widget(button32)
         verticalBox.add_widget(button5)
         verticalBox.add_widget(button6)
         verticalBox.add_widget(button7)
