@@ -205,27 +205,27 @@ class BoxLayoutColor(BoxLayout_main):
 
             plt.style.use('dark_background')
             plt.subplot(2, 2, 1)
-            plt.imshow(image_B)
+            plt.imshow(image_B,cmap=self.colormap)
             plt.subplot(2, 2, 1).text(5, 5, 'G', fontsize=18, ha='center', va='center')
             plt.style.use('dark_background')
             plt.axis('off')
 
             plt.subplot(2, 2, 2)
-            plt.imshow(image_G)
+            plt.imshow(image_G,cmap=self.colormap)
             plt.subplot(2, 2, 2).text(5, 5, 'R', fontsize=18, ha='center', va='center')
-            plt.style.use('dark_background')
+            plt.gcf().set_facecolor('black')
             plt.axis('off')
 
 
             plt.subplot(2, 2, 3)
-            plt.imshow(image_R)
+            plt.imshow(image_R,cmap=self.colormap)
             plt.subplot(2, 2, 3).text(5, 5, 'I', fontsize=18, ha='center', va='center')
-            plt.style.use('dark_background')
+            plt.gcf().set_facecolor('black')
             plt.axis('off')
 
             plt.subplot(2, 2, 4)
             plt.imshow(image_color)
-            plt.style.use('dark_background')
+            plt.gcf().set_facecolor('black')
             plt.axis('off')
 
             plt.subplots_adjust(top=0.99, bottom=0.01, left=0.01, right=0.99, hspace=0.0,
@@ -270,6 +270,7 @@ class BoxLayoutColor(BoxLayout_main):
 
         self.scale_state = 'asinh'
         self.diplaystate = 0
+        self.colormap = 'gray'  # 'gist_yarg'
 
         self.df = self.obtain_df()
         self.oo = FigureCanvasKivyAgg(plt.gcf())
@@ -291,7 +292,7 @@ class BoxLayoutColor(BoxLayout_main):
         verticalBox = BoxLayout(orientation='horizontal', size_hint_y=0.15)
 
         button3 = Button(text="Sure Lens", background_color=(0.4, 1, 0, 1))
-        button32 = Button(text="Flexion", background_color=(0.4, 1, 0, 1))
+        button32 = Button(text="Single Arc", background_color=(0.4, 1, 0, 1))
 
         button4 = Button(text="Maybe Lens", background_color=(0.4, 1, 0, 1))
 
@@ -311,14 +312,21 @@ class BoxLayoutColor(BoxLayout_main):
         button9.bind(on_press=partial(self.classify, 'Elliptical', 2))
         button10.bind(on_press=partial(self.classify, 'Disk', 2))
 
-        buttonscale1 = Button(text="Linear")
+
+        buttonscale1= Button(text="Linear")
         buttonscale2 = Button(text="Sqrt")
         buttonscale3 = Button(text="Log")
         buttonscale4 = Button(text="Asinh")
+        buttoncolormap1= Button(text="Inverted")
+        buttoncolormap2 = Button(text="Bb8")
+        buttoncolormap3 = Button(text="Gray")
         buttonscale1.bind(on_press=partial(self.change_scale, 'linear'))
         buttonscale2.bind(on_press=partial(self.change_scale, 'sqrt'))
         buttonscale3.bind(on_press=partial(self.change_scale, 'log'))
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
+        buttoncolormap1.bind(on_press=partial(self.change_colormap, 'gist_yarg'))
+        buttoncolormap2.bind(on_press=partial(self.change_colormap, 'hot'))
+        buttoncolormap3.bind(on_press=partial(self.change_colormap, 'gray'))
 
         LSbutton = Button(text="LS", font_size=25, size_hint_x=0.1)
         LSbutton.bind(on_press=self.get_legacy_survey)
@@ -344,10 +352,9 @@ class BoxLayoutColor(BoxLayout_main):
         horizontalBoxup.add_widget(tnumber)
 
         verticalBox.add_widget(button3)
-        
+        verticalBox.add_widget(button32)
 
         verticalBox.add_widget(button4)
-        verticalBox.add_widget(button32)
         verticalBox.add_widget(button5)
         verticalBox.add_widget(button6)
         verticalBox.add_widget(button7)
@@ -365,7 +372,9 @@ class BoxLayoutColor(BoxLayout_main):
         verticalBox1.add_widget(buttonscale2)
         verticalBox1.add_widget(buttonscale3)
         verticalBox1.add_widget(buttonscale4)
-
+        verticalBox1.add_widget(buttoncolormap1)
+        verticalBox1.add_widget(buttoncolormap2)
+        verticalBox1.add_widget(buttoncolormap3)
         superBox.add_widget(horizontalBoxup)
         superBox.add_widget(horizontalBox)
 
