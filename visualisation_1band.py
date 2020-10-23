@@ -55,7 +55,7 @@ class ColoredFigureCanvasKivyAgg(FigureCanvasKivyAgg):
             t = int(b) + h
             reg = self.copy_from_bbox(bbox)
             buf_rgba = reg.to_string()
-        print('size',w,h)
+        
         texture = Texture.create(size=(w, h))
         texture.flip_vertical()
         facecolor = 'white'
@@ -523,7 +523,7 @@ class BoxLayout_main(App):
             print('Edit the right path to your ds9 executable depending on your OS')
 
 
-        sself.pathtofile = './files_to_visualize/'
+        self.pathtofile = './files_to_visualize/'
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile+ '*.fits')])
         self.counter = 0
