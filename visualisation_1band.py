@@ -25,6 +25,53 @@ import matplotlib.pyplot as plt
 from functools import partial
 from kivy.core.window import Window
 import platform
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from kivy.graphics.texture import Texture
+from kivy.graphics import Rectangle, Color
+
+
+class ColoredFigureCanvasKivyAgg(FigureCanvasKivyAgg):
+    def __init__(self, colorarg1,colorarg2,colorarg3,colorarg4,figure, **kwargs):
+        self.color_arg1=colorarg1
+        self.color_arg2 = colorarg2
+        self.color_arg3 = colorarg3
+        self.color_arg4 = colorarg4
+        super(ColoredFigureCanvasKivyAgg, self).__init__(figure,**kwargs)
+    def draw(self):
+        '''
+        Draw the figure using the agg renderer
+        '''
+        self.canvas.clear()
+        FigureCanvasAgg.draw(self)
+        if self.blitbox is None:
+            l, b, w, h = self.figure.bbox.bounds
+            w, h = int(w), int(h)
+            buf_rgba = self.get_renderer().buffer_rgba()
+        else:
+            bbox = self.blitbox
+            l, b, r, t = bbox.extents
+            w = int(r) - int(l)
+            h = int(t) - int(b)
+            t = int(b) + h
+            reg = self.copy_from_bbox(bbox)
+            buf_rgba = reg.to_string()
+        print('size',w,h)
+        texture = Texture.create(size=(w, h))
+        texture.flip_vertical()
+        facecolor = 'white'
+        color = facecolor#self.figure.get_facecolor()
+        with self.canvas:
+            Color(*color)
+            Rectangle(pos=self.pos, size=(w, h))
+            #Color(self.color_arg1, self.color_arg2, self.color_arg3, self.color_arg4)
+            Color(1,1,1,1)
+            self.img_rect = Rectangle(texture=texture, pos=self.pos,
+                                      size=(w,h))
+        texture.blit_buffer(bytes(buf_rgba), colorfmt='rgba', bufferfmt='ubyte')
+        self.img_texture = texture
+
+
+
 
 class CommentDialog(Popup):
 
@@ -264,8 +311,8 @@ class BoxLayout_main(App):
             image[indices1] = np.arcsinh((image[indices1] - self.scale_min) / 2.0) / factor
 
         #figure1 = plt.Figure(figsize=(50, 50), dpi=100)
-        plt.style.use('dark_background')
-        plt.imshow(image, cmap='gray', origin='lower')
+        plt.gcf().set_facecolor('black')
+        plt.imshow(image, cmap=self.colormap, origin='lower')
         plt.axis('off')
     def min_slider_release(self,event,val):
         if self.diplaystate>2:
@@ -323,6 +370,11 @@ class BoxLayout_main(App):
 
         self.scale_state=scale_state
         self.update(event)
+    def change_colormap(self,colormap,event,):
+
+        self.colormap=colormap
+        self.update(event)
+
 
     def forward(self,event):
         self.diplaystate=0
@@ -471,7 +523,7 @@ class BoxLayout_main(App):
             print('Edit the right path to your ds9 executable depending on your OS')
 
 
-        self.pathtofile = './files_to_visualize/'
+        sself.pathtofile = './files_to_visualize/'
 
         self.listimage = sorted([os.path.basename(x) for x in glob.glob(self.pathtofile+ '*.fits')])
         self.counter = 0
@@ -488,6 +540,7 @@ class BoxLayout_main(App):
         self.limit_max=1
         self.limit_min = 0
         self.step=(self.scale_max-self.scale_min)/10.
+        self.colormap='gray'#'gist_yarg'
 
         self.scale_state = 'asinh'
         self.diplaystate=0
@@ -499,7 +552,8 @@ class BoxLayout_main(App):
 
 
 
-        self.oo = FigureCanvasKivyAgg(plt.gcf(),size_hint_x=0.8)
+        self.oo = ColoredFigureCanvasKivyAgg(0.0,0.0,0.0,0.0,plt.gcf(),size_hint_x=0.9)
+
         superBox = BoxLayout(orientation='vertical')
 
         horizontalBoxup = BoxLayout(orientation='horizontal',size_hint_y=0.1)
@@ -550,10 +604,16 @@ class BoxLayout_main(App):
         buttonscale2 = Button(text="Sqrt")
         buttonscale3 = Button(text="Log")
         buttonscale4 = Button(text="Asinh")
+        buttoncolormap1= Button(text="Inverted")
+        buttoncolormap2 = Button(text="Bb8")
+        buttoncolormap3 = Button(text="Gray")
         buttonscale1.bind(on_press=partial(self.change_scale, 'linear'))
         buttonscale2.bind(on_press=partial(self.change_scale, 'sqrt'))
         buttonscale3.bind(on_press=partial(self.change_scale, 'log'))
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
+        buttoncolormap1.bind(on_press=partial(self.change_colormap, 'gist_yarg'))
+        buttoncolormap2.bind(on_press=partial(self.change_colormap, 'hot'))
+        buttoncolormap3.bind(on_press=partial(self.change_colormap, 'gray'))
 
 
         savebutton=Button(text="Save csv",background_color=( 0,1,0.4,1),font_size=25, size_hint_x=0.3)
@@ -580,7 +640,7 @@ class BoxLayout_main(App):
         horizontalBoxup.add_widget(tnumber)
 
         verticalBox.add_widget(button3)
-        
+
         verticalBox.add_widget(button4)
         verticalBox.add_widget(button32)
         verticalBox.add_widget(button5)
@@ -600,6 +660,9 @@ class BoxLayout_main(App):
         verticalBox1.add_widget(buttonscale2)
         verticalBox1.add_widget(buttonscale3)
         verticalBox1.add_widget(buttonscale4)
+        verticalBox1.add_widget(buttoncolormap1)
+        verticalBox1.add_widget(buttoncolormap2)
+        verticalBox1.add_widget(buttoncolormap3)
 
 
         superBox.add_widget(horizontalBoxup)
