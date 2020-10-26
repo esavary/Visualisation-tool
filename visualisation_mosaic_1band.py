@@ -170,25 +170,25 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.clean_scratch(self.pathtoscratch)
 
         self.prepare_png(100)
-        print ("updating..........")
+
         i = start
         j=0
 
         for button in self.list_of_buttons:
 
             try:
-                print('draw')
+
                 if self.dataframe['classification'][100 * self.forward_backward_state + j] == 0:
                     button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state +self.colormap+ str(start) + '.png')
-
                     button.set_lensing_value(0)
 
                 else:
+
                     button.set_source(self.path_background)
                     button.set_lensing_value(1)
                 self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
             except KeyError:
-                print('Keyarre')
+
                 button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state + self.colormap+str(start) + '.png')
 
 
@@ -261,7 +261,7 @@ class BoxLayoutMosaic(BoxLayout_main):
 
             self.list_of_buttons[number].set_lensing_value(np.abs(self.list_of_buttons[number].get_lensing_value()-1))
             if self.list_of_buttons[number].get_lensing_value()==0:
-                self.list_of_buttons[number].set_source( self.pathtoscratch + str(number + 1 + self.forward_backward_state * 100) + self.scale_state + str(self.counter - 101) + '.png')
+                self.list_of_buttons[number].set_source( self.pathtoscratch + str(number + 1 + self.forward_backward_state * 100) + self.scale_state + self.colormap+str(self.counter - 101) + '.png')
 
                 self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 0
             else:
