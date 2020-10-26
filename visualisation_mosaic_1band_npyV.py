@@ -237,7 +237,7 @@ class BoxLayoutMosaic(BoxLayout_main):
             self.list_of_buttons[number].set_lensing_value(np.abs(self.list_of_buttons[number].get_lensing_value()-1))
             if self.list_of_buttons[number].get_lensing_value()==0:
 
-                self.list_of_buttons[number].set_background_normal( self.pathtoscratch + str(number + 1 + self.forward_backward_state * 100) + self.scale_state + str(self.counter - 101) + '.png')
+                self.list_of_buttons[number].set_background_normal( self.pathtoscratch + str(number + 1 + self.forward_backward_state * 100) + self.scale_state+self.colormap + str(self.counter - 101) + '.png')
 
                 self.dataframe['classification'].iloc[100 * self.forward_backward_state + number] = 0
             else:
