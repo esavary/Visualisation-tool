@@ -136,9 +136,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         for i in np.arange(start, start + number + 1):
             img = self.draw_image(i, self.scale_state)
 
-            image = Image.fromarray(np.uint8(img * 255), 'L')
-            image = image.resize((150, 150), Image.ANTIALIAS)
-            image.save(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png', 'PNG')
+            plt.imsave(self.pathtoscratch + str(i + 1) + self.scale_state +self.colormap+ str(start) + '.png', img, cmap=self.colormap)
 
             self.counter = self.counter + 1
 
@@ -172,15 +170,17 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.clean_scratch(self.pathtoscratch)
 
         self.prepare_png(100)
-
+        print ("updating..........")
         i = start
         j=0
 
         for button in self.list_of_buttons:
 
             try:
+                print('draw')
                 if self.dataframe['classification'][100 * self.forward_backward_state + j] == 0:
-                    button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
+                    button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state +self.colormap+ str(start) + '.png')
+
                     button.set_lensing_value(0)
 
                 else:
@@ -188,7 +188,8 @@ class BoxLayoutMosaic(BoxLayout_main):
                     button.set_lensing_value(1)
                 self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + j] = j + 1
             except KeyError:
-                button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png')
+                print('Keyarre')
+                button.set_source(self.pathtoscratch + str(i + 1) + self.scale_state + self.colormap+str(start) + '.png')
 
 
             # button.set_source('cutecat.png')
@@ -336,6 +337,7 @@ class BoxLayoutMosaic(BoxLayout_main):
         self.forward_backward_state = 0
         self.total_n_frame =int(len(self.listimage)/100.)
         self.dataframe = self.create_df()
+        self.colormap = 'gray'
 
 
         self.prepare_png(self.number_per_frame)
@@ -348,13 +350,13 @@ class BoxLayoutMosaic(BoxLayout_main):
             try:
                 if self.dataframe['classification'][i]==0:
                     self.list_of_buttons.append(
-                        CustomButton(0,source=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+                        CustomButton(0,source=self.pathtoscratch + str(i + 1) + self.scale_state +self.colormap+ str(0) + '.png'))
                 else:
                     self.list_of_buttons.append(
                         CustomButton(1, source=self.path_background))
                 self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + i] = i + 1
             except KeyError:
-                self.list_of_buttons.append(CustomButton(1, source=self.pathtoscratch + str(i + 1) + self.scale_state + str(0) + '.png'))
+                self.list_of_buttons.append(CustomButton(1, source=self.pathtoscratch + str(i + 1) + self.scale_state +self.colormap+ str(0) + '.png'))
 
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
 
@@ -367,10 +369,16 @@ class BoxLayoutMosaic(BoxLayout_main):
         buttonscale2 = Button(text="Sqrt")
         buttonscale3 = Button(text="Log")
         buttonscale4 = Button(text="Asinh")
+        buttoncolormap1 = Button(text="Inverted")
+        buttoncolormap2 = Button(text="Bb8")
+        buttoncolormap3 = Button(text="Gray")
         buttonscale1.bind(on_press=partial(self.change_scale, 'linear'))
         buttonscale2.bind(on_press=partial(self.change_scale, 'sqrt'))
         buttonscale3.bind(on_press=partial(self.change_scale, 'log'))
         buttonscale4.bind(on_press=partial(self.change_scale, 'asinh'))
+        buttoncolormap1.bind(on_press=partial(self.change_colormap, 'gist_yarg'))
+        buttoncolormap2.bind(on_press=partial(self.change_colormap, 'hot'))
+        buttoncolormap3.bind(on_press=partial(self.change_colormap, 'gray'))
 
         bforward = Button(text=" --> ")
         bbackward = Button(text=" <-- ")
@@ -385,6 +393,9 @@ class BoxLayoutMosaic(BoxLayout_main):
         buttonbox.add_widget(buttonscale2)
         buttonbox.add_widget(buttonscale3)
         buttonbox.add_widget(buttonscale4)
+        buttonbox.add_widget(buttoncolormap1)
+        buttonbox.add_widget(buttoncolormap2)
+        buttonbox.add_widget(buttoncolormap3)
         buttonbox.add_widget(bbackward)
         buttonbox.add_widget(bforward)
         buttonbox.add_widget(self.textnumber)
