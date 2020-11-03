@@ -23,6 +23,7 @@ from kivy.uix.textinput import TextInput
 import matplotlib.pyplot as plt
 from functools import partial
 from kivy.core.window import Window
+import platform
 class BoxLayoutColor(BoxLayout_main):
 
 
@@ -205,26 +206,26 @@ class BoxLayoutColor(BoxLayout_main):
 
             plt.style.use('dark_background')
             plt.subplot(2, 2, 1)
-            plt.imshow(image_B,cmap=self.colormap)
+            plt.imshow(image_B,cmap=self.colormap,origin='lower')
             plt.subplot(2, 2, 1).text(5, 5, 'G', fontsize=18, ha='center', va='center')
             plt.style.use('dark_background')
             plt.axis('off')
 
             plt.subplot(2, 2, 2)
-            plt.imshow(image_G,cmap=self.colormap)
+            plt.imshow(image_G,cmap=self.colormap,origin='lower')
             plt.subplot(2, 2, 2).text(5, 5, 'R', fontsize=18, ha='center', va='center')
             plt.gcf().set_facecolor('black')
             plt.axis('off')
 
 
             plt.subplot(2, 2, 3)
-            plt.imshow(image_R,cmap=self.colormap)
+            plt.imshow(image_R,cmap=self.colormap,origin='lower')
             plt.subplot(2, 2, 3).text(5, 5, 'I', fontsize=18, ha='center', va='center')
             plt.gcf().set_facecolor('black')
             plt.axis('off')
 
             plt.subplot(2, 2, 4)
-            plt.imshow(image_color)
+            plt.imshow(image_color,origin='lower')
             plt.gcf().set_facecolor('black')
             plt.axis('off')
 
@@ -239,7 +240,22 @@ class BoxLayoutColor(BoxLayout_main):
 
     def build(self):
         # Please enter the path of ds9 executable here:
-        self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+        os_def = platform.system()
+        print(os_def)
+        if os_def == 'Linux':
+            self.pathds9 = '/usr/local/bin/ds9'
+            print('If your DS9 is not in /usr/local/bin/ds9 please edit the right path')
+        if os_def == 'Windows': 
+            self.pathds9 = 'C:\\SAOImageDS9\\ds9.exe'
+            print('If your DS9 is not in C:\\SAOImageDS9\\ds9.exe please edit the right path')
+        #this is for mac but don't know the path
+        if os_def == 'Darwin':
+            self.pathds9 = 'ds9'
+            print('Edit the right path to your ds9 executable depending on your OS')
+        else :
+            print('Edit the right path to your ds9 executable depending on your OS')
+
+
 
         self.pathtofile = './files_to_visualize/'
 
@@ -292,9 +308,9 @@ class BoxLayoutColor(BoxLayout_main):
         verticalBox = BoxLayout(orientation='horizontal', size_hint_y=0.15)
 
         button3 = Button(text="Sure Lens", background_color=(0.4, 1, 0, 1))
-        button32 = Button(text="Single Arc", background_color=(0.4, 1, 0, 1))
+        button32 = Button(text="Maybe Lens", background_color=(0.4, 1, 0, 1))
 
-        button4 = Button(text="Maybe Lens", background_color=(0.4, 1, 0, 1))
+        button4 = Button(text="Flexion", background_color=(0.4, 1, 0, 1))
 
         button5 = Button(text="Non Lens", background_color=(0.4, 1, 0, 1))
         button6 = Button(text="Merger")
@@ -303,8 +319,8 @@ class BoxLayoutColor(BoxLayout_main):
         button9 = Button(text="Elliptical")
         button10 = Button(text="Disk")
         button3.bind(on_press=partial(self.classify, 'L', 1))
-        button32.bind(on_press=partial(self.classify, 'SA', 1))
-        button4.bind(on_press=partial(self.classify, 'ML', 1))
+        button32.bind(on_press=partial(self.classify, 'ML', 1))
+        button4.bind(on_press=partial(self.classify, 'F', 1))
         button5.bind(on_press=partial(self.classify, 'NL', 1))
         button6.bind(on_press=partial(self.classify, 'Merger', 2))
         button7.bind(on_press=partial(self.classify, 'Spiral', 2))
