@@ -381,5 +381,5 @@ class BoxLayoutMosaic(BoxLayout_main):
 
 if __name__ == '__main__':
     BoxLayoutMosaic().run()
-
+ 
 
