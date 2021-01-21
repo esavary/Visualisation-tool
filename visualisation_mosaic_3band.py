@@ -100,7 +100,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
             img = self.draw_image(i, self.scale_state)
             image = Image.fromarray(np.uint8(img * 255), 'RGB')
             image = image.resize((150, 150), Image.ANTIALIAS)
-            image.save(self.pathtoscratch + str(i + 1) + self.scale_state + str(start) + '.png', 'PNG')
+            image.save(self.pathtoscratch + str(i + 1) + self.scale_state +self.colormap+ str(start) + '.png', 'PNG')
 
             self.counter = self.counter + 1
 
@@ -144,6 +144,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
         self.total_n_frame = int(len(self.listimage) / 100.)
         self.forward_backward_state = 0
         self.dataframe = self.create_df()
+        self.colormap = 'gray'
 
         self.prepare_png(self.number_per_frame)
         allbox = BoxLayout(orientation='vertical')
@@ -154,7 +155,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
             try:
                 if self.dataframe['classification'][i] == 0:
                     self.list_of_buttons.append(
-                        CustomButton(0, source=self.pathtoscratch + str(i + 1) + self.scale_state + str(
+                        CustomButton(0, source=self.pathtoscratch + str(i + 1) + self.scale_state+ self.colormap+ str(
                             0) + '.png'))
                 else:
                     self.list_of_buttons.append(
@@ -162,7 +163,7 @@ class BoxLayoutMosaicColor(BoxLayoutMosaic):
                 self.dataframe['Grid_pos'].iloc[100 * self.forward_backward_state + i] = i + 1
             except KeyError:
                 self.list_of_buttons.append(CustomButton(1, source=self.pathtoscratch + str(
-                    i + 1) + self.scale_state + str(0) + '.png'))
+                    i + 1) + self.scale_state + self.colormap+str(0) + '.png'))
 
             self.list_of_buttons[i].bind(on_press=partial(self.on_click, i))
         for button in self.list_of_buttons:
