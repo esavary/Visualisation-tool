@@ -295,12 +295,17 @@ class BoxLayout_main(App):
                               size=(400, 100))
                 popup.open()
         elif scale_state=='sqrt':
-            image = image.clip(min=self.scale_min, max=self.scale_max)
-            image = image - self.scale_min
-            indices = np.where(image < 0)
-            image[indices] = 0.0
-            image = np.sqrt(image)
-            image = image / math.sqrt(self.scale_max - self.scale_min)
+            try:
+                image = image.clip(min=self.scale_min, max=self.scale_max)
+                image = image - self.scale_min
+                indices = np.where(image < 0)
+                image[indices] = 0.0
+                image = np.sqrt(image)
+                image = image / math.sqrt(self.scale_max - self.scale_min)
+            except ValueError:
+                popup = Popup(title='Error ', content=Label(text='Sqrt of negative number'), size_hint=(None, None),
+                              size=(400, 100))
+                popup.open()
         elif scale_state=='asinh':
             factor = np.arcsinh((self.scale_max - self.scale_min) / 2.0)
             indices0 = np.where(image < self.scale_min)
