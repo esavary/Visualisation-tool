@@ -51,7 +51,7 @@ class BoxLayoutQUASARS(BoxLayout_main):
                 plate = int(xid['plate'])
                 mjd = int(xid['mjd'])
                 fiberID = int(xid['fiberID'])
-                webbrowser.open("https://dr14.sdss.org/optical/spectrum/view?id=309946&plate="+str(plate)+"&mjd="+str(mjd)+"&fiberid="+str(fiberID), new=1)
+                webbrowser.open("https://dr14.sdss.org/optical/spectrum/view?plate="+str(plate)+"&mjd="+str(mjd)+"&fiberid="+str(fiberID), new=1)
             except TypeError:
                 popup = Popup(title='No spectrum available ', content=Label(text='No spectrum available for this object'), size_hint=(None, None),
                               size=(400, 100))
