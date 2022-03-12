@@ -14,7 +14,7 @@ matplotlib==3.0.3
 numpngw==0.0.8
 numpy==1.18.1
 pandas==0.25.3
-Pillow==7.1.2
+Pillow==9.0.1
 Pygments==2.5.2
 pyparsing==2.4.6
 pypiwin32==223
