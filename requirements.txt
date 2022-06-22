@@ -12,7 +12,7 @@ Kivy-Garden==0.1.4
 kiwisolver==1.1.0
 matplotlib==3.0.3
 numpngw==0.0.8
-numpy==1.18.1
+numpy==1.22.0
 pandas==0.25.3
 Pillow==7.1.2
 Pygments==2.5.2
